@@ -1,4 +1,4 @@
-# NERLIFT Simulation Environment - Architecture Overview
+# NeuroLift Technologies Simulation Environment - Architecture Overview
 
 **Date:** October 7, 2025  
 **Version:** 1.0  
@@ -6,13 +6,13 @@
 
 ## System Architecture
 
-The NERLIFT Simulation Environment implements a novel approach to AI training through experiential learning. Unlike traditional machine learning approaches that train on datasets, this system creates realistic simulation environments where AI agents (Avatars) experience authentic challenges and learn through doing.
+The NeuroLift Technologies Simulation Environment implements a novel approach to AI training through experiential learning. Unlike traditional machine learning approaches that train on datasets, this system creates realistic simulation environments where AI agents (Avatars) experience authentic challenges and learn through doing.
 
 ### High-Level Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    NERLIFT Simulation Environment           │
+│                    NeuroLift Technologies Simulation Environment           │
 ├─────────────────────────────────────────────────────────────┤
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
 │  │   Avatars   │  │    Aides    │  │  Advocates  │        │

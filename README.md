@@ -1,4 +1,4 @@
-# NERLIFT Simulation Environment
+# NeuroLift Technologies Simulation Environment
 
 **NeuroLift Technologies AI Fusion Framework - Simulation Environment**
 
@@ -90,7 +90,7 @@ This simulation approach addresses both gaps through authentic experiential lear
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd nerlift-simulation
+cd NeuroLift Technologies-simulation
 
 # Install dependencies
 pip install -r requirements.txt
@@ -108,7 +108,7 @@ python scripts/run_training_session.py --avatar stay_alert --scenarios workplace
 ## 📁 Repository Structure
 
 ```
-nerlift-simulation/
+neuroLift-simulation/
 ├── docs/                    # Comprehensive documentation
 ├── research/               # ADHD research and real-world feedback
 ├── src/                    # Core implementation

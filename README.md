@@ -48,10 +48,17 @@ src/
 ├── advocates/       # Fused Advocate intelligences
 └── fusion/          # TOI-OTOI fusion algorithms
 
+cloudflare/          # Cloudflare integration (NEW)
+├── connector.py     # Cloudflare API connector
+├── workers/         # Cloudflare Workers
+├── config/          # Configuration files
+└── utils/           # Deployment and helper scripts
+
 docs/
 ├── framework/       # TOI-OTOI framework documentation
 ├── architecture/    # System architecture and design
-└── business/        # Business plans and strategy
+├── business/        # Business plans and strategy
+└── cloudflare/      # Cloudflare setup guide
 
 config/
 ├── avatars.yaml     # Avatar configurations
@@ -120,6 +127,31 @@ assets/
 - **Stage 3**: Fusion optimization with community feedback
 - **Stage 4**: Advocate validation in real-world scenarios
 
+## Infrastructure & Deployment
+
+### 🌐 Cloudflare Integration
+**Website**: neuroliftsolutions.com (Registered with Northwest Registered Agent)
+
+Our infrastructure leverages Cloudflare for:
+- **WordPress Hosting**: Optimized performance and caching
+- **Cloudflare Workers**: Serverless edge computing
+- **Cloudflare Pages**: Static site hosting for documentation and app interfaces
+- **CDN**: Global content delivery for fast access
+- **Security**: DDoS protection, WAF, and bot mitigation
+- **SSL/TLS**: Automatic HTTPS and encryption
+
+#### Quick Start
+```bash
+# Configure environment
+cp cloudflare/.env.example cloudflare/.env
+
+# Deploy everything
+cd cloudflare/utils
+./deploy.sh --all
+```
+
+**Documentation**: See [Cloudflare Setup Guide](docs/cloudflare/CLOUDFLARE_SETUP.md)
+
 ## Business Model
 
 - **Enterprise Solutions** (50%): B2B workplace integration
@@ -130,7 +162,8 @@ assets/
 
 - **Founder**: Joshua Dorsey
 - **Email**: neuro.edge24@gmail.com
-- **Domains**: neurolifttechnologies.com, .org, .info
+- **Website**: neuroliftsolutions.com
+- **Previous Domains**: neurolifttechnologies.com, .org, .info
 
 ## License
 

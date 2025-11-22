@@ -177,6 +177,33 @@ See `docs/playbooks/implementation-guide.md` for detailed instructions.
 ## 📁 Repository Structure
 
 ```
+src/
+├── avatars/         # Individual Avatar implementations
+├── aides/           # Aide support systems
+├── advocates/       # Fused Advocate intelligences
+└── fusion/          # TOI-OTOI fusion algorithms
+
+cloudflare/          # Cloudflare integration (NEW)
+├── connector.py     # Cloudflare API connector
+├── workers/         # Cloudflare Workers
+├── config/          # Configuration files
+└── utils/           # Deployment and helper scripts
+
+docs/
+├── framework/       # TOI-OTOI framework documentation
+├── architecture/    # System architecture and design
+├── business/        # Business plans and strategy
+└── cloudflare/      # Cloudflare setup guide
+
+config/
+├── avatars.yaml     # Avatar configurations
+├── fusion.yaml      # TOI-OTOI fusion parameters
+└── privacy.yaml     # Privacy and security settings
+
+assets/
+├── diagrams/        # Architecture diagrams
+├── mockups/         # UI/UX designs
+└── presentations/   # Business presentations
 neuroLift-simulation/
 ├── docs/                    # Comprehensive documentation
 ├── research/               # ADHD research and real-world feedback
@@ -251,6 +278,32 @@ See [CONTRIBUTING.md](docs/contributing.md) for detailed guidelines.
 - [Training Metrics](docs/training-metrics.md)
 - [RRT Foundation](docs/rrt-foundation.md)
 
+## Infrastructure & Deployment
+
+### 🌐 Cloudflare Integration
+**Website**: neuroliftsolutions.com (Registered with Northwest Registered Agent)
+
+Our infrastructure leverages Cloudflare for:
+- **WordPress Hosting**: Optimized performance and caching
+- **Cloudflare Workers**: Serverless edge computing
+- **Cloudflare Pages**: Static site hosting for documentation and app interfaces
+- **CDN**: Global content delivery for fast access
+- **Security**: DDoS protection, WAF, and bot mitigation
+- **SSL/TLS**: Automatic HTTPS and encryption
+
+#### Quick Start
+```bash
+# Configure environment
+cp cloudflare/.env.example cloudflare/.env
+
+# Deploy everything
+cd cloudflare/utils
+./deploy.sh --all
+```
+
+**Documentation**: See [Cloudflare Setup Guide](docs/cloudflare/CLOUDFLARE_SETUP.md)
+
+## Business Model
 ## 🏆 Success Criteria
 
 We'll know we've succeeded when:
@@ -263,6 +316,10 @@ We'll know we've succeeded when:
 6. **Fusion Validated:** Resulting Advocate demonstrates both empathy and expertise
 7. **Community Ready:** Code is documented well enough for contributors
 
+- **Founder**: Joshua Dorsey
+- **Email**: neuro.edge24@gmail.com
+- **Website**: neuroliftsolutions.com
+- **Previous Domains**: neurolifttechnologies.com, .org, .info
 ## 📞 Contact
 
 **Primary Developer:** Joshua W. Dorsey, Sr. (ADHD cognitive profile)

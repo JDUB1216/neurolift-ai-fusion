@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository implements the TOI-OTOI (Theory of Intelligence - Optimal Theory of Intelligence) framework to ensure privacy-preserving, human-controlled AI agency across all business operations.
+This repository implements the TOI-OTOI (Terms of Interaction - Orchestrated Terms of Interaction) framework to ensure privacy-preserving, human-controlled AI agency across all business operations.
 
 ## Core Principles
 

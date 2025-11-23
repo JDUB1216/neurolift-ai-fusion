@@ -39,13 +39,13 @@ REPOSITORY_INFO = {
 # ============================================================================
 
 TOI_OTOI_FRAMEWORK = {
-    "name": "Theory of Intelligence - Optimization Through Organized Intelligence",
+    "name": "Terms of Interaction - Orchestrated Terms of Interaction",
     "description": "Revolutionary framework that powers the Avatar→Aide→Advocate architecture",
     "formula": "Avatar (Specialized Intelligence) + Aide (Contextual Support) + TOI-OTOI Framework = Advocate (Integrated Intelligence)",
     "core_principles": [
-        "Theory of Intelligence: Understanding how Avatar-Aide pairs can best serve users",
-        "Optimization Process: Streamlining and enhancing combined capabilities",
-        "Organized Intelligence: Structuring fused systems for maximum effectiveness"
+        "Terms of Interaction: Understanding how Avatar-Aide pairs can best serve users through defined interaction patterns",
+        "Orchestrated Process: Streamlining and enhancing combined capabilities through organized interaction flow",
+        "Structured Intelligence: Organizing fused systems for maximum effectiveness through orchestrated terms"
     ],
     "fusion_mechanics": [
         "Intelligence Synthesis: Avatar and Aide capabilities combined",
@@ -197,7 +197,7 @@ DIRECTORY_STRUCTURE = {
             "Advocate creation protocols"
         ],
         "fusion_parameters": [
-            "Theory of Intelligence: Understanding how Avatar-Aide pairs can best serve users",
+            "Terms of Interaction: Understanding how Avatar-Aide pairs can best serve users through defined interaction patterns",
             "Optimization Process: Streamlining and enhancing combined capabilities",
             "Organized Intelligence: Structuring fused systems for maximum effectiveness"
         ]

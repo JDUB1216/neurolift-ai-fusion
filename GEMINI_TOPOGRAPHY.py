@@ -10,13 +10,13 @@ Avatar→Aide→Advocate Architecture.
 Repository: https://github.com/JDUB1216/neurolift-ai-fusion
 Notion Project: https://www.notion.so/273555e42dea81af9736d835b955ad20
 
-IMPORTANT TERMINOLOGY NOTE (Updated: 2025-11-23):
+IMPORTANT TERMINOLOGY NOTE (Updated: November 23, 2025):
 TOI-OTOI = Terms of Interaction - Orchestrated Terms of Interaction
 This framework defines how AI agents interact with users and each other through
 structured, orchestrated interaction patterns ensuring privacy, human control, and
 ethical alignment.
 
-Updated by: GitHub Copilot AI Agent on behalf of Joshua Dorsey
+Author: Joshua Dorsey (via GitHub Copilot)
 """
 
 import os
@@ -206,8 +206,8 @@ DIRECTORY_STRUCTURE = {
         ],
         "fusion_parameters": [
             "Terms of Interaction: Understanding how Avatar-Aide pairs can best serve users through defined interaction patterns",
-            "Optimization Process: Streamlining and enhancing combined capabilities",
-            "Organized Intelligence: Structuring fused systems for maximum effectiveness"
+            "Orchestration Process: Streamlining and enhancing combined capabilities through coordinated interaction flow",
+            "Structured Interaction Intelligence: Organizing fused systems for maximum effectiveness through orchestrated terms"
         ]
     },
     "docs": {

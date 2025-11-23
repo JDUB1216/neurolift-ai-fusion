@@ -195,7 +195,6 @@ All references throughout the repository now use this consistent terminology.
 
 ---
 
-*Updated by: GitHub Copilot AI Agent*  
-*Date: 2025-11-23*  
-*On behalf of: Joshua Dorsey*  
-*Task: Repository verbiage standardization*
+*Author: Joshua Dorsey (via GitHub Copilot)*  
+*Date: November 23, 2025*  
+*Update: Repository verbiage standardization*

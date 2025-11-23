@@ -65,15 +65,12 @@ DIRECTORY_STRUCTURE = {
         "description": "Repository root directory",
         "files": [
             "README.md",
-            "GEMINI_TOPOGRAPHY.py",
             ".gitignore",
             "requirements.txt",
-            "setup.py",
-            "LICENSE",
-            "ARCHITECTURE.md",
-            "BUSINESS_MODEL.md"
+            "pytest.ini",
+            "LICENSE"
         ],
-        "subdirectories": ["src", "docs", "config", "assets", "tests", "scripts"]
+        "subdirectories": ["src", "docs", "configs", "data", "assets", "tests", "scripts"]
     },
     "src": {
         "path": "/src/",
@@ -205,8 +202,24 @@ DIRECTORY_STRUCTURE = {
     "docs": {
         "path": "/docs/",
         "description": "Comprehensive documentation for the NeuroLift AI Fusion system",
-        "subdirectories": ["framework", "architecture", "business"],
+        "subdirectories": ["ai-guidance", "framework", "architecture", "business", "handoffs"],
         "purpose": "Complete documentation ecosystem"
+    },
+    "docs/ai-guidance": {
+        "path": "/docs/ai-guidance/",
+        "description": "AI assistant guidance and repository navigation documentation",
+        "expected_files": [
+            "GEMINI_TOPOGRAPHY.py",
+            "README.md"
+        ],
+        "data_content": [
+            "Repository structure mappings",
+            "TOI-OTOI framework specifications",
+            "Avatar-Aide-Advocate architecture details",
+            "Development phases and roadmap",
+            "AI assistant utility functions"
+        ],
+        "purpose": "Comprehensive guidance for AI assistants working on the project"
     },
     "docs/framework": {
         "path": "/docs/framework/",

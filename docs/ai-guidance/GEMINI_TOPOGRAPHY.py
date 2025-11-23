@@ -682,7 +682,9 @@ def validate_avatar_implementation(avatar_type: AvatarType) -> bool:
     Note: This is a placeholder function for future implementation.
     When implemented, it will check actual Avatar code against specifications.
     """
-    raise NotImplementedError("This function is planned for future implementation")
+    raise NotImplementedError(
+        "Avatar implementation validation against TOI-OTOI specifications not yet implemented"
+    )
 
 def generate_fusion_parameters(avatar_type: AvatarType, aide_type: str) -> Dict[str, Any]:
     """Generate TOI-OTOI fusion parameters for specific Avatar/Aide pairs.
@@ -690,7 +692,9 @@ def generate_fusion_parameters(avatar_type: AvatarType, aide_type: str) -> Dict[
     Note: This is a placeholder function for future implementation.
     When implemented, it will generate fusion configuration based on Avatar/Aide pairing.
     """
-    raise NotImplementedError("This function is planned for future implementation")
+    raise NotImplementedError(
+        "TOI-OTOI fusion parameter generation for Avatar/Aide pairs not yet implemented"
+    )
 
 # ============================================================================
 # MAIN EXECUTION GUIDANCE

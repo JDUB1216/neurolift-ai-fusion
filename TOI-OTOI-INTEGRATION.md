@@ -174,3 +174,28 @@ Each agent includes a `toi-profile.json` that defines:
 ---
 
 *This framework ensures that AI agents enhance human capabilities while maintaining human control, privacy, and ethical standards across all business operations.*
+
+---
+
+## Documentation Update Note
+
+**Updated: November 23, 2025**
+
+The TOI-OTOI framework terminology has been standardized across all repository documentation. 
+
+**Proper Verbiage**: TOI-OTOI = **Terms of Interaction - Orchestrated Terms of Interaction**
+
+This framework defines how AI agents interact with users and each other through structured, orchestrated interaction patterns that ensure:
+- Privacy-preserving operations
+- Human-controlled agency
+- Ethical alignment
+- Transparent decision-making
+
+All references throughout the repository now use this consistent terminology.
+
+---
+
+*Updated by: GitHub Copilot AI Agent*  
+*Date: 2025-11-23*  
+*On behalf of: Joshua Dorsey*  
+*Task: Repository verbiage standardization*

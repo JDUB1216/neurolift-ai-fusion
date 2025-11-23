@@ -275,8 +275,8 @@ DIRECTORY_STRUCTURE = {
             "Marketing strategies"
         ]
     },
-    "config": {
-        "path": "/config/",
+    "configs": {
+        "path": "/configs/",
         "description": "Configuration files for system components",
         "expected_files": [
             "avatars.yaml",
@@ -677,14 +677,20 @@ def get_integration_targets() -> Dict[str, Dict[str, Any]]:
     return INTEGRATION_POINTS
 
 def validate_avatar_implementation(avatar_type: AvatarType) -> bool:
-    """Validate Avatar implementation against specifications."""
-    # Implementation would check actual Avatar code against specifications
-    pass
+    """Validate Avatar implementation against specifications.
+    
+    Note: This is a placeholder function for future implementation.
+    When implemented, it will check actual Avatar code against specifications.
+    """
+    raise NotImplementedError("This function is planned for future implementation")
 
 def generate_fusion_parameters(avatar_type: AvatarType, aide_type: str) -> Dict[str, Any]:
-    """Generate TOI-OTOI fusion parameters for specific Avatar/Aide pairs."""
-    # Implementation would generate fusion configuration
-    pass
+    """Generate TOI-OTOI fusion parameters for specific Avatar/Aide pairs.
+    
+    Note: This is a placeholder function for future implementation.
+    When implemented, it will generate fusion configuration based on Avatar/Aide pairing.
+    """
+    raise NotImplementedError("This function is planned for future implementation")
 
 # ============================================================================
 # MAIN EXECUTION GUIDANCE

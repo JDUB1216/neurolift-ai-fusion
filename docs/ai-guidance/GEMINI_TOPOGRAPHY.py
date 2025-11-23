@@ -711,8 +711,11 @@ if __name__ == "__main__":
     print(f"Formula: {TOI_OTOI_FRAMEWORK['formula']}")
     print("\nAvatar Types:")
     for avatar_type in AvatarType:
-        spec = AVATAR_SPECIFICATIONS[avatar_type]
-        print(f"  {spec['name']}: {spec['description']}")
+        spec = AVATAR_SPECIFICATIONS.get(avatar_type)
+        if spec:
+            print(f"  {spec['name']}: {spec['description']}")
+        else:
+            print(f"  {avatar_type.value}: (Specification pending)")
     print("\nDevelopment Phases:")
     for phase, details in DEVELOPMENT_PHASES.items():
         print(f"  {phase}: {details['status']}")

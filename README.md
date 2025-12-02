@@ -120,20 +120,24 @@ python scripts/setup_environment.py
 # Start a training session with StayAlert Avatar
 python scripts/run_training_session.py --avatar stay_alert --scenarios workplace.meeting_dynamics
 ```
-business-agents-repo/
-├── README.md                           # This file
-├── TOI-OTOI-INTEGRATION.md            # TOI-OTOI framework documentation
-├── HUMAN-OVERSIGHT-PROTOCOLS.md       # Human control and oversight guidelines
-├── AGENT-ORCHESTRATION-GUIDE.md       # How agents coordinate and communicate
-├── .github/                           # GitHub workflows and automation
-├── config/                            # Global configuration files
-├── executive-agents/                  # 3 core executive agents (CFO, CTO, CMO)
-├── department-agents/                 # 12 department-level agents
-├── shared-resources/                  # Templates, prompts, knowledge bases
-├── human-interfaces/                  # CEO and COO dashboards
-├── monitoring/                        # Agent performance and decision tracking
-└── docs/                             # Architecture and implementation guides
-```
+
+## 📂 Business Structure
+
+### 1-Person Structure (Sole Proprietorship)
+
+This structure is designed for a single founder (CEO) who manages all aspects of the business. The three divisions are managed as separate projects under the founder's direct oversight.
+
+- **neurodivergent-adhd-ai-fusion-system/**: The core product division.
+- **toi-otoi-framework/**: The division for the TOI-OTOI framework.
+- **rrt-aidvocai-te/**: The division for mental distress and burnout support.
+
+### 2-Person Structure (Partnership)
+
+This structure is designed for a two-person team (CEO + COO) to orchestrate a complete business operation through specialized AI agents.
+
+- **executive-agents/**: 3 core executive agents (CFO, CTO, CMO).
+- **department-agents/**: 12 department-level agents.
+- **human-interfaces/**: CEO and COO dashboards.
 
 ## Agent Hierarchy
 
@@ -177,6 +181,26 @@ See `docs/playbooks/implementation-guide.md` for detailed instructions.
 ## 📁 Repository Structure
 
 ```
+business-agents-repo/
+├── README.md                           # This file
+├── TOI-OTOI-INTEGRATION.md            # TOI-OTOI framework documentation
+├── HUMAN-OVERSIGHT-PROTOCOLS.md       # Human control and oversight guidelines
+├── AGENT-ORCHESTRATION-GUIDE.md       # How agents coordinate and communicate
+├── .github/                           # GitHub workflows and automation
+├── config/                            # Global configuration files
+├── business-structure/
+│   ├── 1-person-structure/
+│   │   ├── neurodivergent-adhd-ai-fusion-system/
+│   │   ├── toi-otoi-framework/
+│   │   └── rrt-aidvocai-te/
+│   └── 2-person-structure/
+│       ├── executive-agents/
+│       ├── department-agents/
+│       └── human-interfaces/
+├── shared-resources/                  # Templates, prompts, knowledge bases
+├── monitoring/                        # Agent performance and decision tracking
+└── docs/                             # Architecture and implementation guides
+
 src/
 ├── avatars/         # Individual Avatar implementations
 ├── aides/           # Aide support systems

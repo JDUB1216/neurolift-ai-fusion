@@ -118,8 +118,7 @@ neurolift-simulation/
 │   └── utils/              # Utilities and shared components
 ├── tests/                  # Comprehensive test suite
 ├── scripts/                # Setup and execution scripts
-├── configs/                # Configuration files
-├── config/                 # Global TOI-OTOI configuration
+├── configs/                # All configuration files
 ├── data/                   # Local storage (privacy-first)
 └── archive/                # Archived content for reference
 ```

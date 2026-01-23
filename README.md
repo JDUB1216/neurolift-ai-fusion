@@ -1,22 +1,6 @@
-# AI Agent-Based Business Repository Structure
-**Complete Organizational Framework for Two-Person Billion-Dollar Operation**
-
----
-
-## Repository Overview
-
-This structure enables two humans (CEO + COO) to orchestrate a complete business operation through specialized AI agents integrated with TOI-OTOI principles.
-
-## Quick Start
-
-1. **Review the structure** in this README and explore the directories
-2. **Configure TOI-OTOI** settings in `config/global-toi-config.json`
-3. **Deploy executive agents** starting with CFO Agent
-4. **Set up human dashboards** for CEO and COO oversight
-5. **Follow implementation playbooks** in `docs/playbooks/`
 # NeuroLift Technologies Simulation Environment
 
-**NeuroLift Technologies AI Fusion Framework - Simulation Environment**
+**TOI-OTOI Framework with Avatar→Aide→Advocate Architecture**
 
 A Sims/RPG-style simulation environment where AI Avatars with ADHD traits experience authentic life struggles while AI Aides provide real-time coaching. After sufficient training through repeated scenarios, they fuse into Advocates that combine lived understanding with expert solutions.
 
@@ -106,7 +90,7 @@ This simulation approach addresses both gaps through authentic experiential lear
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd NeuroLift Technologies-simulation
+cd neurolift-simulation
 
 # Install dependencies
 pip install -r requirements.txt
@@ -120,77 +104,24 @@ python scripts/setup_environment.py
 # Start a training session with StayAlert Avatar
 python scripts/run_training_session.py --avatar stay_alert --scenarios workplace.meeting_dynamics
 ```
-business-agents-repo/
-├── README.md                           # This file
-├── TOI-OTOI-INTEGRATION.md            # TOI-OTOI framework documentation
-├── HUMAN-OVERSIGHT-PROTOCOLS.md       # Human control and oversight guidelines
-├── AGENT-ORCHESTRATION-GUIDE.md       # How agents coordinate and communicate
-├── .github/                           # GitHub workflows and automation
-├── config/                            # Global configuration files
-├── executive-agents/                  # 3 core executive agents (CFO, CTO, CMO)
-├── department-agents/                 # 12 department-level agents
-├── shared-resources/                  # Templates, prompts, knowledge bases
-├── human-interfaces/                  # CEO and COO dashboards
-├── monitoring/                        # Agent performance and decision tracking
-└── docs/                             # Architecture and implementation guides
-```
-
-## Agent Hierarchy
-
-### Executive Level (3 Agents)
-- **CFO Agent** - Financial strategy, planning, and oversight
-- **CTO Agent** - Technical strategy, architecture, and innovation  
-- **CMO Agent** - Brand strategy, marketing, and growth
-
-### Department Level (12 Agents)
-- **Business Development** (4): Sales, Marketing, Partnership, Investor Relations
-- **Operations** (4): Legal, HR, Project Management, Customer Success
-- **Technical** (4): Product Manager, QA, DevOps, Security
-
-## Key Features
-
-- **TOI-OTOI Integration** - Privacy-preserving, human-controlled AI agency
-- **Human Oversight** - CEO and COO maintain strategic and operational control
-- **Agent Coordination** - Structured communication and escalation protocols
-- **Performance Monitoring** - Real-time tracking of agent effectiveness
-- **Scalable Architecture** - Modular design for easy expansion and customization
-
-## Getting Started
-
-1. **Phase 1**: Foundation setup (Weeks 1-2)
-2. **Phase 2**: Executive layer deployment (Weeks 3-4)  
-3. **Phase 3**: Department layer deployment (Weeks 5-8)
-4. **Phase 4**: Optimization and tuning (Weeks 9-12)
-
-See `docs/playbooks/implementation-guide.md` for detailed instructions.
-
-## Support
-
-- **Architecture**: See `docs/architecture/`
-- **Playbooks**: See `docs/playbooks/`
-- **Training**: See `docs/training/`
-
----
-
-*This framework enables two humans to effectively run a billion-dollar operation by orchestrating specialized AI agents while maintaining strategic control and operational oversight.*
 
 ## 📁 Repository Structure
 
 ```
-neuroLift-simulation/
+neurolift-simulation/
 ├── docs/                    # Comprehensive documentation
-├── research/               # ADHD research and real-world feedback
-├── src/                    # Core implementation
-│   ├── avatars/           # Avatar system and ADHD traits
-│   ├── aides/             # Aide system and expertise modules
-│   ├── simulation/        # Simulation environment and scenarios
-│   ├── advocates/         # Fusion engine and Advocate system
-│   ├── metrics/           # Progress tracking and analytics
-│   └── utils/             # Utilities and shared components
-├── tests/                 # Comprehensive test suite
-├── scripts/               # Setup and execution scripts
-├── configs/               # Configuration files
-└── data/                  # Local storage (privacy-first)
+├── src/                     # Core implementation
+│   ├── avatars/            # Avatar system and ADHD traits
+│   ├── aides/              # Aide system and expertise modules
+│   ├── simulation/         # Simulation environment and scenarios
+│   ├── advocates/          # Fusion engine and Advocate system
+│   └── utils/              # Utilities and shared components
+├── tests/                  # Comprehensive test suite
+├── scripts/                # Setup and execution scripts
+├── configs/                # Configuration files
+├── config/                 # Global TOI-OTOI configuration
+├── data/                   # Local storage (privacy-first)
+└── archive/                # Archived content for reference
 ```
 
 ## 🔬 Development Phases
@@ -198,8 +129,8 @@ neuroLift-simulation/
 ### Phase 1: Foundation ✅
 - [x] Repository structure
 - [x] Documentation framework
-- [ ] Base classes implementation
-- [ ] Configuration schemas
+- [x] Base classes implementation
+- [x] Configuration schemas
 
 ### Phase 2: Simulation Core
 - [ ] World engine
@@ -207,8 +138,8 @@ neuroLift-simulation/
 - [ ] NPC base classes
 
 ### Phase 3: First Avatar-Aide Pair (Prototype)
-- [ ] StayAlert Avatar implementation
-- [ ] Corresponding Aide expertise
+- [x] StayAlert Avatar implementation
+- [x] Corresponding Aide expertise
 - [ ] Basic training scenarios
 - [ ] Training loop validation
 
@@ -245,11 +176,8 @@ See [CONTRIBUTING.md](docs/contributing.md) for detailed guidelines.
 ## 📚 Documentation
 
 - [Architecture Overview](docs/architecture.md)
-- [Avatar-Aide-Advocate Process](docs/avatar-aide-advocate-process.md)
-- [Executive Functions Theory](docs/executive-functions.md)
-- [Simulation Scenarios](docs/simulation-scenarios.md)
-- [Training Metrics](docs/training-metrics.md)
-- [RRT Foundation](docs/rrt-foundation.md)
+- [TOI-OTOI Integration](TOI-OTOI-INTEGRATION.md)
+- [Implementation Summary](docs/implementation_summary.md)
 
 ## 🏆 Success Criteria
 
@@ -262,6 +190,17 @@ We'll know we've succeeded when:
 5. **Realistic Simulation:** Scenarios authentically represent ADHD challenges
 6. **Fusion Validated:** Resulting Advocate demonstrates both empathy and expertise
 7. **Community Ready:** Code is documented well enough for contributors
+
+## 📝 Notes
+
+### Voice Integration (Research Notes)
+- **Aimybox:** Check this voice SDK - it appears to be **mobile-only** (Android/iOS). Verify before planning desktop/web integration.
+
+### Deployment Options
+For a "Deploy to Cloudflare" button, the following is needed:
+- Add a deploy button badge to README: `[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/{username}/{repo})`
+- Ensure `wrangler.jsonc` or `wrangler.toml` configuration file exists for Cloudflare Workers/Pages
+- Configure required bindings (KV, D1, Queues, etc.) in the wrangler config
 
 ## 📞 Contact
 
@@ -281,5 +220,9 @@ We'll know we've succeeded when:
 ## 🎯 Current Status
 
 **Development Phase:** Foundation (Phase 1)
-**Last Updated:** October 7, 2025
+**Last Updated:** January 2026
 **Next Milestone:** Complete base classes and first Avatar-Aide pair prototype
+
+---
+
+*Note: The 2-person business structure content has been archived to `/archive/2-person-business-structure/` for reference.*

@@ -1,6 +1,6 @@
 # NeuroLift Technologies Simulation Environment
 
-**TOI-OTOI Framework with Avatar→Aide→Advocate Architecture**
+**NeuroLift AI-Fusion Framework - Simulation Training Environment**
 
 A Sims/RPG-style simulation environment where AI Avatars with ADHD traits experience authentic life struggles while AI Aides provide real-time coaching. After sufficient training through repeated scenarios, they fuse into Advocates that combine lived understanding with expert solutions.
 
@@ -157,10 +157,21 @@ neurolift-simulation/
 
 ## 🛡️ Privacy-First Design
 
-- **Local Processing:** All processing happens locally
+<!-- 
+NON-NEGOTIABLES FOR PRODUCTION & END USER USE:
+The following 4 principles are mandatory requirements for any production 
+deployment or end-user facing application of this framework.
+
+Note: "Local Processing" does not apply during development and training phases,
+where cloud/remote processing may be used for Avatar-Aide simulation training.
+-->
+
+- **Local Processing:** All processing happens locally *(exempt during development/training)*
 - **No Data Collection:** No external data transmission without explicit consent
 - **No Monetization:** User data never monetized
 - **Transparent:** Clear about what data exists and where
+
+> **⚠️ Production Requirements:** The above 4 principles are **non-negotiable** for production and end-user use. "Local Processing" may be relaxed during development and training phases only.
 
 ## 🤝 Contributing
 

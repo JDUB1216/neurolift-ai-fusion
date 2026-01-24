@@ -175,6 +175,11 @@ See [CONTRIBUTING.md](docs/contributing.md) for detailed guidelines.
 ## 📚 Documentation
 
 - [Architecture Overview](docs/architecture.md)
+- [Avatar-Aide-Advocate Process](docs/avatar-aide-advocate-process.md)
+- [Executive Functions Theory](docs/executive-functions.md)
+- [Simulation Scenarios](docs/simulation-scenarios.md)
+- [Training Metrics](docs/training-metrics.md)
+- [RRT Foundation](docs/rrt-foundation.md)
 - [TOI-OTOI Integration](TOI-OTOI-INTEGRATION.md)
 - [Implementation Summary](docs/implementation_summary.md)
 

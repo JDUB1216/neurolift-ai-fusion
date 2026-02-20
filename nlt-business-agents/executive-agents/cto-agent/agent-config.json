@@ -72,7 +72,7 @@
   },
   "communication": {
     "reports_to": [
-      "Owner"
+      "owner"
     ],
     "coordinates_with": [
       "cfo_agent",
@@ -83,7 +83,7 @@
       "qa_agent"
     ],
     "notification_recipients": [
-      "Owner"
+      "owner"
     ]
   },
   "performance_metrics": {

@@ -221,6 +221,10 @@ class BaseAvatar(ABC):
     attempts, failures, and gradual improvement with Aide support.
     """
 
+    INDEPENDENCE_GAIN_ON_SUCCESS = 0.1
+    COACHED_SUCCESS_GAIN = 0.05
+    REGRESSION_ON_FAILURE = 0.02
+
     def __init__(
         self,
         avatar_id: str,
@@ -699,11 +703,14 @@ class BaseAvatar(ABC):
                 progress.independent_successes += 1
                 progress.independence_milestones.append(datetime.now())
                 progress.current_independence_level = min(
-                    1.0, progress.current_independence_level + 0.1
+                    1.0,
+                    progress.current_independence_level
+                    + self.INDEPENDENCE_GAIN_ON_SUCCESS,
                 )
             else:
                 progress.current_independence_level = min(
-                    1.0, progress.current_independence_level + 0.05
+                    1.0,
+                    progress.current_independence_level + self.COACHED_SUCCESS_GAIN,
                 )
             progress.last_improvement = datetime.now()
         else:
@@ -711,7 +718,8 @@ class BaseAvatar(ABC):
             progress.consecutive_successes = 0
             # Slight independence regression on failure
             progress.current_independence_level = max(
-                0.0, progress.current_independence_level - 0.02
+                0.0,
+                progress.current_independence_level - self.REGRESSION_ON_FAILURE,
             )
 
     def _apply_coaching_effects(self, coaching_action: Dict[str, Any]) -> None:

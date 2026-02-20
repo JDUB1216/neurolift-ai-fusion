@@ -74,6 +74,11 @@ class ObservationReport:
     receives a consistent snapshot every observation tick.
     """
 
+    STRESS_INTERVENTION_THRESHOLD: float = 0.7
+    LOAD_INTERVENTION_THRESHOLD: float = 0.8
+    BURNOUT_INTERVENTION_THRESHOLD: float = 0.6
+    STRUGGLE_COUNT_INTERVENTION_THRESHOLD: int = 3
+
     avatar_id: str = ""
     current_state: str = ""
     emotional_state: str = ""
@@ -89,11 +94,11 @@ class ObservationReport:
     def needs_intervention(self) -> bool:
         """Quick check: does this snapshot warrant aide action?"""
         return (
-            self.stress_level > 0.7
-            or self.cognitive_load > 0.8
-            or self.burnout_risk > 0.6
+            self.stress_level > self.STRESS_INTERVENTION_THRESHOLD
+            or self.cognitive_load > self.LOAD_INTERVENTION_THRESHOLD
+            or self.burnout_risk > self.BURNOUT_INTERVENTION_THRESHOLD
             or self.emotional_state in ("frustrated", "overwhelmed", "defeated")
-            or len(self.active_struggles) >= 3
+            or len(self.active_struggles) >= self.STRUGGLE_COUNT_INTERVENTION_THRESHOLD
         )
 
 
@@ -263,6 +268,10 @@ class ExperienceMemory:
     def record(self, experience: ExperienceRecord) -> None:
         """Store a new experience."""
         self._records.append(experience)
+
+    def get_all_records(self) -> List[ExperienceRecord]:
+        """Return a copy of all experience records for fusion/assessment."""
+        return list(self._records)
 
     def recall_by_task(self, task_type: str, limit: int = 20) -> List[ExperienceRecord]:
         """Recall experiences for a specific task type."""

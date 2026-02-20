@@ -77,6 +77,10 @@ class ReadinessAssessor:
     """
 
     OVERALL_THRESHOLD = 0.65
+    EXPERIENCE_VOLUME_TARGET = 50
+    EXPERIENCE_VARIETY_TARGET = 3
+    EXPERIENTIAL_DEPTH_VOLUME_WEIGHT = 0.6
+    EXPERIENTIAL_DEPTH_VARIETY_WEIGHT = 0.4
 
     def assess(self, avatar: BaseAvatar, aide: BaseAide) -> FusionReadiness:
         """Run the full readiness assessment."""
@@ -115,11 +119,12 @@ class ReadinessAssessor:
         recurring = avatar.experience_memory.get_recurring_struggles()
 
         # Score based on volume and variety of experiences
-        EXPERIENCE_VOLUME_TARGET = 50
-        EXPERIENCE_VARIETY_TARGET = 3
-        volume_score = min(1.0, total / EXPERIENCE_VOLUME_TARGET)
-        variety_score = min(1.0, len(recurring) / EXPERIENCE_VARIETY_TARGET)
-        score = volume_score * 0.6 + variety_score * 0.4
+        volume_score = min(1.0, total / self.EXPERIENCE_VOLUME_TARGET)
+        variety_score = min(1.0, len(recurring) / self.EXPERIENCE_VARIETY_TARGET)
+        score = (
+            volume_score * self.EXPERIENTIAL_DEPTH_VOLUME_WEIGHT
+            + variety_score * self.EXPERIENTIAL_DEPTH_VARIETY_WEIGHT
+        )
 
         evidence = [
             f"Total experiences: {total}",
@@ -173,7 +178,7 @@ class ReadinessAssessor:
     def _assess_emotional_resilience(self, avatar: BaseAvatar) -> DimensionScore:
         """Has the Avatar built emotional coping capacity?"""
         # Look at emotional journey in experiences
-        records = list(avatar.experience_memory._records)
+        records = avatar.experience_memory.get_all_records()
         if not records:
             return DimensionScore(
                 dimension=FusionDimension.EMOTIONAL_RESILIENCE,
@@ -215,7 +220,7 @@ class ReadinessAssessor:
     ) -> DimensionScore:
         """Has the Avatar adopted coaching strategies as its own?"""
         effective = avatar.experience_memory.get_effective_strategies()
-        aide_strategies = aide._get_strategy_effectiveness_summary()
+        aide_strategies = aide.get_strategy_effectiveness_summary()
 
         # Overlap: strategies the Aide taught that the Avatar now uses independently
         internalised = set(effective.keys()) & set(aide_strategies.keys())

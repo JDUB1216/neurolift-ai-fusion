@@ -7,7 +7,7 @@
         "agent_id": "cfo_agent",
         "name": "Chief Financial Officer Agent",
         "type": "executive",
-        "parent_agent": null,
+        "parent_agent": "owner",
         "status": "active",
         "version": "1.0.0",
         "sub_agents": [
@@ -31,7 +31,7 @@
         "agent_id": "cto_agent",
         "name": "Chief Technology Officer Agent",
         "type": "executive",
-        "parent_agent": null,
+        "parent_agent": "owner",
         "status": "active",
         "version": "1.0.0",
         "sub_agents": [
@@ -55,7 +55,7 @@
         "agent_id": "cmo_agent",
         "name": "Chief Marketing Officer Agent",
         "type": "executive",
-        "parent_agent": null,
+        "parent_agent": "owner",
         "status": "active",
         "version": "1.0.0",
         "sub_agents": [
@@ -103,7 +103,7 @@
           "type": "department",
           "parent_agent": "cmo_agent",
           "department": "business_development",
-          "status": "active",
+          "status": "planned",
           "version": "1.0.0",
           "responsibilities": [
             "Marketing campaign execution",
@@ -122,7 +122,7 @@
           "type": "department",
           "parent_agent": "cmo_agent",
           "department": "business_development",
-          "status": "active",
+          "status": "planned",
           "version": "1.0.0",
           "responsibilities": [
             "Strategic partnership identification",
@@ -139,9 +139,9 @@
           "agent_id": "investor_relations_agent",
           "name": "Investor Relations Agent",
           "type": "department",
-          "parent_agent": "cmo_agent",
+          "parent_agent": "cfo_agent",
           "department": "business_development",
-          "status": "active",
+          "status": "planned",
           "version": "1.0.0",
           "responsibilities": [
             "Investor communication strategy",
@@ -162,7 +162,7 @@
           "type": "department",
           "parent_agent": "cfo_agent",
           "department": "operations",
-          "status": "active",
+          "status": "planned",
           "version": "1.0.0",
           "responsibilities": [
             "Contract review and analysis",
@@ -181,7 +181,7 @@
           "type": "department",
           "parent_agent": "cfo_agent",
           "department": "operations",
-          "status": "active",
+          "status": "planned",
           "version": "1.0.0",
           "responsibilities": [
             "Recruitment strategy development",
@@ -200,7 +200,7 @@
           "type": "department",
           "parent_agent": "cfo_agent",
           "department": "operations",
-          "status": "active",
+          "status": "planned",
           "version": "1.0.0",
           "responsibilities": [
             "Project planning and scheduling",
@@ -219,7 +219,7 @@
           "type": "department",
           "parent_agent": "cfo_agent",
           "department": "operations",
-          "status": "active",
+          "status": "planned",
           "version": "1.0.0",
           "responsibilities": [
             "Customer onboarding optimization",
@@ -240,7 +240,7 @@
           "type": "department",
           "parent_agent": "cto_agent",
           "department": "technical",
-          "status": "active",
+          "status": "planned",
           "version": "1.0.0",
           "responsibilities": [
             "Product strategy development",
@@ -259,7 +259,7 @@
           "type": "department",
           "parent_agent": "cto_agent",
           "department": "technical",
-          "status": "active",
+          "status": "planned",
           "version": "1.0.0",
           "responsibilities": [
             "Test strategy and planning",
@@ -278,7 +278,7 @@
           "type": "department",
           "parent_agent": "cto_agent",
           "department": "technical",
-          "status": "active",
+          "status": "planned",
           "version": "1.0.0",
           "responsibilities": [
             "Infrastructure architecture and planning",
@@ -297,7 +297,7 @@
           "type": "department",
           "parent_agent": "cto_agent",
           "department": "technical",
-          "status": "active",
+          "status": "planned",
           "version": "1.0.0",
           "responsibilities": [
             "Security vulnerability assessment",

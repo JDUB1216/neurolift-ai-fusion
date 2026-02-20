@@ -97,7 +97,7 @@
 ## 📁 Repository Structure
 
 ```
-business-agents-repo/
+nlt-business-agents/
 ├── README.md                           # ✅ Complete overview and quick start
 ├── TOI-OTOI-INTEGRATION.md            # ✅ TOI-OTOI framework documentation
 ├── HUMAN-OVERSIGHT-PROTOCOLS.md       # ✅ Human control guidelines

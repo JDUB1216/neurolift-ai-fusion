@@ -344,11 +344,17 @@ class BaseAdvocate(ABC):
         stress = user_context.get("stress_level", 0.5)
         cognitive_load = user_context.get("cognitive_load", 0.5)
 
-        if stress > 0.8 or cognitive_load > 0.9:
+        CRITICAL_STRESS_THRESHOLD = 0.8
+        CRITICAL_LOAD_THRESHOLD = 0.9
+        HIGH_STRESS_THRESHOLD = 0.6
+        HIGH_LOAD_THRESHOLD = 0.7
+        MEDIUM_STRESS_THRESHOLD = 0.4
+
+        if stress > CRITICAL_STRESS_THRESHOLD or cognitive_load > CRITICAL_LOAD_THRESHOLD:
             level = "critical"
-        elif stress > 0.6 or cognitive_load > 0.7:
+        elif stress > HIGH_STRESS_THRESHOLD or cognitive_load > HIGH_LOAD_THRESHOLD:
             level = "high"
-        elif stress > 0.4:
+        elif stress > MEDIUM_STRESS_THRESHOLD:
             level = "medium"
         else:
             level = "low"

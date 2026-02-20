@@ -115,8 +115,10 @@ class ReadinessAssessor:
         recurring = avatar.experience_memory.get_recurring_struggles()
 
         # Score based on volume and variety of experiences
-        volume_score = min(1.0, total / 50)  # 50 experiences = full marks
-        variety_score = min(1.0, len(recurring) / 3)  # knows >=3 recurring struggles
+        EXPERIENCE_VOLUME_TARGET = 50
+        EXPERIENCE_VARIETY_TARGET = 3
+        volume_score = min(1.0, total / EXPERIENCE_VOLUME_TARGET)
+        variety_score = min(1.0, len(recurring) / EXPERIENCE_VARIETY_TARGET)
         score = volume_score * 0.6 + variety_score * 0.4
 
         evidence = [

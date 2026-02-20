@@ -77,6 +77,18 @@ class ReadinessAssessor:
     """
 
     OVERALL_THRESHOLD = 0.65
+    EXPERIENCE_VOLUME_TARGET = 50
+    EXPERIENCE_VARIETY_TARGET = 3
+    EXPERIENTIAL_VOLUME_WEIGHT = 0.6
+    EXPERIENTIAL_VARIETY_WEIGHT = 0.4
+    COACHING_CONFIDENCE_TARGET = 20
+    INDEPENDENCE_WEIGHT = 0.7
+    INDEPENDENT_TASK_WEIGHT = 0.3
+    EMOTIONAL_RECOVERY_WEIGHT = 0.6
+    STRESS_RESILIENCE_WEIGHT = 0.4
+    STRATEGY_DISCOVERY_BONUS = 0.05
+    MAX_BURNOUT_CRISIS_PENALTY = 0.3
+    BURNOUT_CRISIS_PENALTY_PER_EVENT = 0.05
 
     def assess(self, avatar: BaseAvatar, aide: BaseAide) -> FusionReadiness:
         """Run the full readiness assessment."""
@@ -115,11 +127,12 @@ class ReadinessAssessor:
         recurring = avatar.experience_memory.get_recurring_struggles()
 
         # Score based on volume and variety of experiences
-        EXPERIENCE_VOLUME_TARGET = 50
-        EXPERIENCE_VARIETY_TARGET = 3
-        volume_score = min(1.0, total / EXPERIENCE_VOLUME_TARGET)
-        variety_score = min(1.0, len(recurring) / EXPERIENCE_VARIETY_TARGET)
-        score = volume_score * 0.6 + variety_score * 0.4
+        volume_score = min(1.0, total / self.EXPERIENCE_VOLUME_TARGET)
+        variety_score = min(1.0, len(recurring) / self.EXPERIENCE_VARIETY_TARGET)
+        score = (
+            volume_score * self.EXPERIENTIAL_VOLUME_WEIGHT
+            + variety_score * self.EXPERIENTIAL_VARIETY_WEIGHT
+        )
 
         evidence = [
             f"Total experiences: {total}",
@@ -138,7 +151,7 @@ class ReadinessAssessor:
         total = metrics.get("total_interventions", 0)
 
         # Need enough interventions to have a meaningful rate
-        confidence = min(1.0, total / 20)
+        confidence = min(1.0, total / self.COACHING_CONFIDENCE_TARGET)
         score = success_rate * confidence
 
         evidence = [
@@ -158,7 +171,10 @@ class ReadinessAssessor:
         independent_tasks = sum(1 for p in progress_items if p.is_independent)
         total_tasks = len(avatar.learning_progress) or 1
 
-        score = independence * 0.7 + (independent_tasks / total_tasks) * 0.3
+        score = (
+            independence * self.INDEPENDENCE_WEIGHT
+            + (independent_tasks / total_tasks) * self.INDEPENDENT_TASK_WEIGHT
+        )
 
         evidence = [
             f"Overall independence: {independence:.1%}",
@@ -173,7 +189,7 @@ class ReadinessAssessor:
     def _assess_emotional_resilience(self, avatar: BaseAvatar) -> DimensionScore:
         """Has the Avatar built emotional coping capacity?"""
         # Look at emotional journey in experiences
-        records = list(avatar.experience_memory._records)
+        records = avatar.experience_memory.get_records()
         if not records:
             return DimensionScore(
                 dimension=FusionDimension.EMOTIONAL_RESILIENCE,
@@ -198,7 +214,10 @@ class ReadinessAssessor:
         current_stress = avatar.stress_level
         resilience_bonus = max(0.0, 1.0 - current_stress)
 
-        score = recovery_rate * 0.6 + resilience_bonus * 0.4
+        score = (
+            recovery_rate * self.EMOTIONAL_RECOVERY_WEIGHT
+            + resilience_bonus * self.STRESS_RESILIENCE_WEIGHT
+        )
 
         evidence = [
             f"Emotional recovery rate: {recovery_rate:.1%}",
@@ -215,14 +234,14 @@ class ReadinessAssessor:
     ) -> DimensionScore:
         """Has the Avatar adopted coaching strategies as its own?"""
         effective = avatar.experience_memory.get_effective_strategies()
-        aide_strategies = aide._get_strategy_effectiveness_summary()
+        aide_strategies = aide.get_strategy_effectiveness_summary()
 
         # Overlap: strategies the Aide taught that the Avatar now uses independently
         internalised = set(effective.keys()) & set(aide_strategies.keys())
         total_taught = len(aide_strategies) or 1
         internalisation_rate = len(internalised) / total_taught
 
-        score = min(1.0, internalisation_rate + len(effective) * 0.05)
+        score = min(1.0, internalisation_rate + len(effective) * self.STRATEGY_DISCOVERY_BONUS)
 
         evidence = [
             f"Strategies internalised: {len(internalised)}",
@@ -244,7 +263,10 @@ class ReadinessAssessor:
 
         # Low burnout risk + few crises = good management
         risk_score = 1.0 - burnout["risk_score"]
-        crisis_penalty = min(0.3, crisis_count * 0.05)
+        crisis_penalty = min(
+            self.MAX_BURNOUT_CRISIS_PENALTY,
+            crisis_count * self.BURNOUT_CRISIS_PENALTY_PER_EVENT,
+        )
         score = max(0.0, risk_score - crisis_penalty)
 
         evidence = [

@@ -150,3 +150,44 @@ class TestSessionOrchestrator:
         assert "session_id" in d
         assert "scenarios" in d
         assert isinstance(d["scenarios"], list)
+
+    def test_retries_respect_max_attempts_per_scenario(self):
+        avatar, aide = self._make_pair()
+        config = SessionConfig(max_attempts_per_scenario=1, max_coaching_per_attempt=5)
+        orchestrator = SessionOrchestrator(avatar, aide, config)
+
+        with patch("random.random", return_value=0.99):
+            result = orchestrator.run_session([
+                {
+                    "name": "Always Fails",
+                    "task_type": "failure_case",
+                    "base_success_rate": 0.0,
+                    "cognitive_demand": 0.9,
+                },
+            ])
+
+        sr = result.scenario_results[0]
+        assert sr.total_attempts == 1
+        assert sr.successes == 0
+
+    def test_failed_retry_outcome_is_tracked(self):
+        avatar, aide = self._make_pair()
+        config = SessionConfig(max_attempts_per_scenario=2, max_coaching_per_attempt=1)
+        orchestrator = SessionOrchestrator(avatar, aide, config)
+
+        with patch("random.random", return_value=0.99):
+            orchestrator.run_session([
+                {
+                    "name": "Failure Tracking",
+                    "task_type": "failure_tracking",
+                    "base_success_rate": 0.0,
+                    "cognitive_demand": 0.8,
+                },
+            ])
+
+        strategy_metrics = aide.get_strategy_effectiveness_summary()
+        assert strategy_metrics
+        assert any(
+            values["times_used"] >= 1 and values["effectiveness"] == 0.0
+            for values in strategy_metrics.values()
+        )

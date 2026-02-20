@@ -35,6 +35,7 @@ class SessionConfig:
     """Configuration for a training session."""
     max_attempts_per_scenario: int = 10
     max_coaching_per_attempt: int = 3
+    min_attempts_for_success_check: int = 3
     independence_target: float = 0.8
     success_rate_target: float = 0.7
     burnout_abort_threshold: float = 0.85
@@ -210,7 +211,9 @@ class SessionOrchestrator:
         name = scenario.get("name", "unnamed")
         sr = ScenarioResult(scenario_name=name)
 
-        for attempt_num in range(self.config.max_attempts_per_scenario):
+        for _attempt_num in range(self.config.max_attempts_per_scenario):
+            if sr.total_attempts >= self.config.max_attempts_per_scenario:
+                break
             # Check burnout abort
             burnout = self.avatar.assess_burnout_risk()
             sr.burnout_risk_peak = max(sr.burnout_risk_peak, burnout["risk_score"])
@@ -230,13 +233,16 @@ class SessionOrchestrator:
                 current_rate = sr.successes / sr.total_attempts
                 if (
                     current_rate >= self.config.success_rate_target
-                    and sr.total_attempts >= 3
+                    and sr.total_attempts >= self.config.min_attempts_for_success_check
                 ):
                     break
             else:
                 # Aide coaching loop
                 coaching_count = 0
-                while coaching_count < self.config.max_coaching_per_attempt:
+                while (
+                    coaching_count < self.config.max_coaching_per_attempt
+                    and sr.total_attempts < self.config.max_attempts_per_scenario
+                ):
                     coaching = self.aide.observe_and_coach(scenario)
                     if coaching is None:
                         break
@@ -246,9 +252,9 @@ class SessionOrchestrator:
                     # Retry after coaching
                     retry = self.avatar.attempt_task(scenario)
                     sr.total_attempts += 1
+                    self.aide.track_intervention_effectiveness(coaching, retry)
                     if retry.success:
                         sr.successes += 1
-                        self.aide.track_intervention_effectiveness(coaching, retry)
                         break
 
             # Return to idle between attempts

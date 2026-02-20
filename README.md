@@ -1,22 +1,6 @@
-# AI Agent-Based Business Repository Structure
-**Complete Organizational Framework for Two-Person Billion-Dollar Operation**
-
----
-
-## Repository Overview
-
-This structure enables two humans (CEO + COO) to orchestrate a complete business operation through specialized AI agents integrated with TOI-OTOI principles.
-
-## Quick Start
-
-1. **Review the structure** in this README and explore the directories
-2. **Configure TOI-OTOI** settings in `config/global-toi-config.json`
-3. **Deploy executive agents** starting with CFO Agent
-4. **Set up human dashboards** for CEO and COO oversight
-5. **Follow implementation playbooks** in `docs/playbooks/`
 # NeuroLift Technologies Simulation Environment
 
-**NeuroLift Technologies AI Fusion Framework - Simulation Environment**
+**NeuroLift AI-Fusion Framework - Simulation Training Environment**
 
 A Sims/RPG-style simulation environment where AI Avatars with ADHD traits experience authentic life struggles while AI Aides provide real-time coaching. After sufficient training through repeated scenarios, they fuse into Advocates that combine lived understanding with expert solutions.
 
@@ -106,7 +90,7 @@ This simulation approach addresses both gaps through authentic experiential lear
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd NeuroLift Technologies-simulation
+cd neurolift-ai-fusion
 
 # Install dependencies
 pip install -r requirements.txt
@@ -181,6 +165,7 @@ See `docs/playbooks/implementation-guide.md` for detailed instructions.
 ## 📁 Repository Structure
 
 ```
+neurolift-ai-fusion/
 business-agents-repo/
 ├── README.md                           # This file
 ├── TOI-OTOI-INTEGRATION.md            # TOI-OTOI framework documentation
@@ -230,18 +215,18 @@ assets/
 └── presentations/   # Business presentations
 neuroLift-simulation/
 ├── docs/                    # Comprehensive documentation
-├── research/               # ADHD research and real-world feedback
-├── src/                    # Core implementation
-│   ├── avatars/           # Avatar system and ADHD traits
-│   ├── aides/             # Aide system and expertise modules
-│   ├── simulation/        # Simulation environment and scenarios
-│   ├── advocates/         # Fusion engine and Advocate system
-│   ├── metrics/           # Progress tracking and analytics
-│   └── utils/             # Utilities and shared components
-├── tests/                 # Comprehensive test suite
-├── scripts/               # Setup and execution scripts
-├── configs/               # Configuration files
-└── data/                  # Local storage (privacy-first)
+├── src/                     # Core implementation
+│   ├── avatars/            # Avatar system and ADHD traits
+│   ├── aides/              # Aide system and expertise modules
+│   ├── simulation/         # Simulation environment and scenarios
+│   ├── advocates/          # Fusion engine and Advocate system
+│   └── utils/              # Utilities and shared components
+├── tests/                  # Comprehensive test suite
+├── scripts/                # Setup and execution scripts
+├── configs/                # All configuration files
+├── data/                   # Local storage (privacy-first)
+├── archive/                # Archived content for reference
+└── nlt-business-agents/    # Business agent framework (1-person setup)
 ```
 
 ## 🔬 Development Phases
@@ -249,8 +234,8 @@ neuroLift-simulation/
 ### Phase 1: Foundation ✅
 - [x] Repository structure
 - [x] Documentation framework
-- [ ] Base classes implementation
-- [ ] Configuration schemas
+- [x] Base classes implementation
+- [x] Configuration schemas
 
 ### Phase 2: Simulation Core
 - [ ] World engine
@@ -258,8 +243,8 @@ neuroLift-simulation/
 - [ ] NPC base classes
 
 ### Phase 3: First Avatar-Aide Pair (Prototype)
-- [ ] StayAlert Avatar implementation
-- [ ] Corresponding Aide expertise
+- [x] StayAlert Avatar implementation
+- [x] Corresponding Aide expertise
 - [ ] Basic training scenarios
 - [ ] Training loop validation
 
@@ -278,10 +263,21 @@ neuroLift-simulation/
 
 ## 🛡️ Privacy-First Design
 
-- **Local Processing:** All processing happens locally
+<!-- 
+NON-NEGOTIABLES FOR PRODUCTION & END USER USE:
+The following 4 principles are mandatory requirements for any production 
+deployment or end-user facing application of this framework.
+
+Note: "Local Processing" does not apply during development and training phases,
+where cloud/remote processing may be used for Avatar-Aide simulation training.
+-->
+
+- **Local Processing:** All processing happens locally *(exempt during development/training)*
 - **No Data Collection:** No external data transmission without explicit consent
 - **No Monetization:** User data never monetized
 - **Transparent:** Clear about what data exists and where
+
+> **⚠️ Production Requirements:** The above 4 principles are **non-negotiable** for production and end-user use. "Local Processing" may be relaxed during development and training phases only.
 
 ## 🤝 Contributing
 
@@ -301,6 +297,8 @@ See [CONTRIBUTING.md](docs/contributing.md) for detailed guidelines.
 - [Simulation Scenarios](docs/simulation-scenarios.md)
 - [Training Metrics](docs/training-metrics.md)
 - [RRT Foundation](docs/rrt-foundation.md)
+- [TOI-OTOI Integration](TOI-OTOI-INTEGRATION.md)
+- [Implementation Summary](docs/implementation_summary.md)
 
 ## Infrastructure & Deployment
 
@@ -362,5 +360,9 @@ We'll know we've succeeded when:
 ## 🎯 Current Status
 
 **Development Phase:** Foundation (Phase 1)
-**Last Updated:** October 7, 2025
+**Last Updated:** January 2026
 **Next Milestone:** Complete base classes and first Avatar-Aide pair prototype
+
+---
+
+*Note: The business agent framework has been reorganized into `/nlt-business-agents/` with a 1-person business setup.*

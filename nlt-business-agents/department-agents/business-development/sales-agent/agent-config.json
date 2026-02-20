@@ -82,7 +82,7 @@
       "customer_success_agent",
       "cmo_agent"
     ],
-    "notification_recipients": ["owner", "owner"]
+    "notification_recipients": ["owner"]
   },
   
   "performance_metrics": {

@@ -112,7 +112,7 @@
       }
     },
     "notification_settings": {
-      "Owner": {
+      "owner": {
         "immediate": [
           "critical_escalations",
           "department_performance_issues",

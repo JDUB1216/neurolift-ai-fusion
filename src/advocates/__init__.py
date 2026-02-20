@@ -13,13 +13,12 @@ Key Components:
 """
 
 from .base_advocate import BaseAdvocate, AdvocateCapabilities, FusionResult
-from .fusion_engine import FusionEngine, FusionReadiness, FusionCriteria
+# Fusion engine module not yet implemented
+# from .fusion_engine import FusionEngine, FusionReadiness, FusionCriteria
 
 __all__ = [
     "BaseAdvocate",
     "AdvocateCapabilities",
     "FusionResult",
-    "FusionEngine",
-    "FusionReadiness",
-    "FusionCriteria",
+    # Additional exports will be added as modules are implemented
 ]

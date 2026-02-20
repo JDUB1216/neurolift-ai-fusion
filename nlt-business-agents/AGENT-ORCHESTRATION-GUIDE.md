@@ -110,8 +110,8 @@ All inter-agent communication flows through a structured message queue system:
 1. **CFO Agent** analyzes financial data and market conditions
 2. **CFO Agent** develops strategic recommendations
 3. **CFO Agent** coordinates with CTO and CMO for input
-4. **CFO Agent** presents comprehensive recommendation to CEO
-5. **CEO** makes final decision
+4. **CFO Agent** presents comprehensive recommendation to Owner
+5. **Owner** makes final decision
 6. **CFO Agent** implements and monitors execution
 
 #### Technical Strategy
@@ -119,8 +119,8 @@ All inter-agent communication flows through a structured message queue system:
 2. **CTO Agent** evaluates emerging technologies and opportunities
 3. **CTO Agent** coordinates with CFO for budget implications
 4. **CTO Agent** coordinates with CMO for market implications
-5. **CTO Agent** presents recommendation to CEO
-6. **CEO** makes final decision
+5. **CTO Agent** presents recommendation to Owner
+6. **Owner** makes final decision
 7. **CTO Agent** implements and monitors execution
 
 #### Marketing Strategy
@@ -128,8 +128,8 @@ All inter-agent communication flows through a structured message queue system:
 2. **CMO Agent** develops brand and growth strategies
 3. **CMO Agent** coordinates with CFO for budget requirements
 4. **CMO Agent** coordinates with CTO for technical capabilities
-5. **CMO Agent** presents recommendation to CEO
-6. **CEO** makes final decision
+5. **CMO Agent** presents recommendation to Owner
+6. **Owner** makes final decision
 7. **CMO Agent** implements and monitors execution
 
 ### Operational Decisions
@@ -138,16 +138,16 @@ All inter-agent communication flows through a structured message queue system:
 1. **Department Agent** identifies operational need or opportunity
 2. **Department Agent** develops solution or recommendation
 3. **Department Agent** coordinates with relevant other departments
-4. **Department Agent** presents to COO for approval
-5. **COO** approves or requests modifications
+4. **Department Agent** presents to Owner for approval
+5. **Owner** approves or requests modifications
 6. **Department Agent** implements and monitors execution
 
 #### Cross-Department Initiatives
 1. **Project Management Agent** identifies cross-department opportunity
 2. **Project Management Agent** coordinates with relevant department agents
 3. **Project Management Agent** develops integrated solution
-4. **Project Management Agent** presents to COO and relevant executives
-5. **COO** coordinates with executives for approval
+4. **Project Management Agent** presents to Owner and relevant executives
+5. **Owner** coordinates with executives for approval
 6. **Project Management Agent** implements with department coordination
 
 ## Conflict Resolution
@@ -184,24 +184,24 @@ All inter-agent communication flows through a structured message queue system:
 1. **CFO Agent** identifies budget constraint or conflict
 2. **CFO Agent** analyzes impact of different allocations
 3. **CFO Agent** coordinates with affected agents
-4. **CFO Agent** presents options to CEO
-5. **CEO** makes allocation decision
+4. **CFO Agent** presents options to Owner
+5. **Owner** makes allocation decision
 6. **CFO Agent** implements and monitors
 
 #### Personnel Conflicts
 1. **HR Agent** identifies resource allocation conflict
 2. **HR Agent** analyzes capacity and requirements
 3. **HR Agent** coordinates with affected department agents
-4. **HR Agent** presents options to COO
-5. **COO** makes allocation decision
+4. **HR Agent** presents options to Owner
+5. **Owner** makes allocation decision
 6. **HR Agent** implements and monitors
 
 #### Technology Conflicts
 1. **CTO Agent** identifies technical resource conflict
 2. **CTO Agent** analyzes technical requirements and constraints
 3. **CTO Agent** coordinates with affected agents
-4. **CTO Agent** presents options to CEO
-5. **CEO** makes technical decision
+4. **CTO Agent** presents options to Owner
+5. **Owner** makes technical decision
 6. **CTO Agent** implements and monitors
 
 ## Performance Optimization

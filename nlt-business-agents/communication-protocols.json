@@ -27,19 +27,19 @@
     "communication_patterns": {
       "request_response": {
         "description": "Specific information or action requests",
-        "flow": "Agent A → Agent B → Agent A",
+        "flow": "Agent A \u2192 Agent B \u2192 Agent A",
         "timeout": "24_hours",
         "escalation": "if_no_response_within_timeout"
       },
       "broadcast": {
         "description": "Company-wide announcements or updates",
-        "flow": "Sender → All Relevant Agents",
+        "flow": "Sender \u2192 All Relevant Agents",
         "response": "optional_acknowledgment",
         "filtering": "based_on_relevance_and_permissions"
       },
       "escalation": {
         "description": "Issues requiring human intervention",
-        "flow": "Agent → Department Agent → Executive Agent → Human",
+        "flow": "Agent \u2192 Department Agent \u2192 Executive Agent \u2192 Human",
         "priority": "high_or_critical",
         "response_time": "2_hours"
       },
@@ -52,27 +52,27 @@
     },
     "escalation_routing": {
       "strategic_issues": {
-        "path": "Department Agent → Executive Agent → CEO",
+        "path": "Department Agent \u2192 Executive Agent \u2192 Owner",
         "timeout": "4_hours",
         "priority": "high"
       },
       "operational_issues": {
-        "path": "Department Agent → COO",
+        "path": "Department Agent \u2192 Owner",
         "timeout": "2_hours",
         "priority": "medium"
       },
       "technical_issues": {
-        "path": "Department Agent → CTO Agent → CEO (if needed)",
+        "path": "Department Agent \u2192 CTO Agent \u2192 Owner (if needed)",
         "timeout": "2_hours",
         "priority": "medium"
       },
       "financial_issues": {
-        "path": "Department Agent → CFO Agent → CEO",
+        "path": "Department Agent \u2192 CFO Agent \u2192 Owner",
         "timeout": "1_hour",
         "priority": "high"
       },
       "cross_functional_issues": {
-        "path": "All Relevant Agents → CEO + COO",
+        "path": "All Relevant Agents \u2192 Owner",
         "timeout": "4_hours",
         "priority": "high"
       }
@@ -80,61 +80,69 @@
     "context_sharing_rules": {
       "between_executives": {
         "level": "full",
-        "includes": ["strategic_context", "decision_rationale", "resource_implications"]
+        "includes": [
+          "strategic_context",
+          "decision_rationale",
+          "resource_implications"
+        ]
       },
       "between_departments": {
         "level": "relevant_only",
-        "includes": ["operational_impact", "resource_requirements", "timeline_implications"]
+        "includes": [
+          "operational_impact",
+          "resource_requirements",
+          "timeline_implications"
+        ]
       },
       "sub_agent_to_parent": {
         "level": "comprehensive",
-        "includes": ["detailed_analysis", "recommendations", "implementation_plan"]
+        "includes": [
+          "detailed_analysis",
+          "recommendations",
+          "implementation_plan"
+        ]
       },
       "to_humans": {
         "level": "summarized_with_details_available",
-        "includes": ["executive_summary", "key_recommendations", "action_items"]
+        "includes": [
+          "executive_summary",
+          "key_recommendations",
+          "action_items"
+        ]
       }
     },
     "notification_settings": {
-      "CEO": {
+      "Owner": {
         "immediate": [
           "critical_escalations",
-          "strategic_decisions_required",
+          "department_performance_issues",
           "major_financial_implications",
+          "operational_escalations",
           "partnership_opportunities",
-          "security_incidents"
+          "process_issues",
+          "resource_conflicts",
+          "security_incidents",
+          "strategic_decisions_required"
         ],
         "daily_summary": [
+          "competitive_analysis",
+          "department_agent_performance",
           "executive_agent_performance",
-          "strategic_kpi_progress",
           "market_intelligence",
-          "competitive_analysis"
+          "operational_efficiency_metrics",
+          "process_optimization_opportunities",
+          "resource_utilization",
+          "strategic_kpi_progress"
         ],
         "weekly_review": [
           "comprehensive_performance_analysis",
-          "strategic_alignment_assessment",
-          "resource_allocation_review",
-          "risk_assessment_update"
-        ]
-      },
-      "COO": {
-        "immediate": [
-          "operational_escalations",
-          "resource_conflicts",
-          "process_issues",
-          "department_performance_issues"
-        ],
-        "daily_summary": [
-          "department_agent_performance",
-          "operational_efficiency_metrics",
-          "resource_utilization",
-          "process_optimization_opportunities"
-        ],
-        "weekly_review": [
-          "operational_performance_analysis",
           "cross_department_coordination",
+          "operational_performance_analysis",
           "process_improvement_recommendations",
-          "resource_allocation_optimization"
+          "resource_allocation_optimization",
+          "resource_allocation_review",
+          "risk_assessment_update",
+          "strategic_alignment_assessment"
         ]
       }
     },

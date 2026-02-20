@@ -57,7 +57,7 @@ We empower solo entrepreneurs to orchestrate scalable business operations by pro
 - Develop strategic partnerships
 
 ### Medium-Term (3 Years)
-- Scale to billion-dollar operations
+- Scale to functional business operations
 - Expand market presence globally
 - Develop advanced AI capabilities
 - Establish industry leadership

@@ -4,7 +4,7 @@
 To be the world's leading AI-powered business operation, enabling human leaders to achieve unprecedented scale and impact through intelligent automation and strategic guidance.
 
 ## Mission Statement
-We empower two-person leadership teams to orchestrate billion-dollar operations by providing specialized AI agents that handle all business functions while maintaining human strategic control and ethical oversight.
+We empower solo entrepreneurs to orchestrate scalable business operations by providing specialized AI agents that handle all business functions while maintaining complete owner control and ethical oversight.
 
 ## Core Values
 

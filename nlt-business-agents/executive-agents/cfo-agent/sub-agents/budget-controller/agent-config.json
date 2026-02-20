@@ -79,7 +79,7 @@
       "hr_agent",
       "project_management_agent"
     ],
-    "notification_recipients": ["cfo_agent", "coo"]
+    "notification_recipients": ["cfo_agent", "owner"]
   },
   
   "performance_metrics": {

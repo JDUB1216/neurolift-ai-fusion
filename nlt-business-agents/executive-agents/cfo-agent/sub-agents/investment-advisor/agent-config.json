@@ -78,7 +78,7 @@
       "financial_analyst",
       "tax_strategist"
     ],
-    "notification_recipients": ["cfo_agent", "ceo"]
+    "notification_recipients": ["cfo_agent", "owner"]
   },
   
   "performance_metrics": {

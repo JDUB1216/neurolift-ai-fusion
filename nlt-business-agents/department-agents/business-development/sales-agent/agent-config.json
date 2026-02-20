@@ -2,7 +2,7 @@
   "agent_id": "sales_agent",
   "agent_name": "Sales Agent",
   "agent_type": "department",
-  "parent_agent": "coo",
+  "parent_agent": "owner",
   "department": "business_development",
   "version": "1.0.0",
   
@@ -75,14 +75,14 @@
   },
   
   "communication": {
-    "reports_to": ["coo"],
+    "reports_to": ["owner"],
     "coordinates_with": [
       "marketing_agent",
       "partnership_agent",
       "customer_success_agent",
       "cmo_agent"
     ],
-    "notification_recipients": ["coo", "ceo"]
+    "notification_recipients": ["owner", "owner"]
   },
   
   "performance_metrics": {

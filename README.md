@@ -90,7 +90,7 @@ This simulation approach addresses both gaps through authentic experiential lear
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd neurolift-simulation
+cd neurolift-ai-fusion
 
 # Install dependencies
 pip install -r requirements.txt
@@ -108,7 +108,7 @@ python scripts/run_training_session.py --avatar stay_alert --scenarios workplace
 ## 📁 Repository Structure
 
 ```
-neurolift-simulation/
+neurolift-ai-fusion/
 ├── docs/                    # Comprehensive documentation
 ├── src/                     # Core implementation
 │   ├── avatars/            # Avatar system and ADHD traits
@@ -120,7 +120,8 @@ neurolift-simulation/
 ├── scripts/                # Setup and execution scripts
 ├── configs/                # All configuration files
 ├── data/                   # Local storage (privacy-first)
-└── archive/                # Archived content for reference
+├── archive/                # Archived content for reference
+└── nlt-business-agents/    # Business agent framework (1-person setup)
 ```
 
 ## 🔬 Development Phases
@@ -240,4 +241,4 @@ For a "Deploy to Cloudflare" button, the following is needed:
 
 ---
 
-*Note: The 2-person business structure content has been archived to `/archive/2-person-business-structure/` for reference.*
+*Note: The business agent framework has been reorganized into `/nlt-business-agents/` with a 1-person business setup.*

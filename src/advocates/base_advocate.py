@@ -344,6 +344,7 @@ class BaseAdvocate(ABC):
         stress = user_context.get("stress_level", 0.5)
         cognitive_load = user_context.get("cognitive_load", 0.5)
 
+        # At module or class level
         CRITICAL_STRESS_THRESHOLD = 0.8
         CRITICAL_LOAD_THRESHOLD = 0.9
         HIGH_STRESS_THRESHOLD = 0.6

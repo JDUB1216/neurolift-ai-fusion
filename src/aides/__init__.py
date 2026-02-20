@@ -15,52 +15,44 @@ Key Components:
 """
 
 from .base_aide import BaseAide, CoachingAction, CoachingContext, BurnoutRisk
-from .rrt_foundation import (
-    RRTFoundation,
-    BurnoutDetector,
-    CrisisIntervention,
-    RecoveryProtocols,
-)
+# RRT Foundation module not yet implemented
+# from .rrt_foundation import (
+#     RRTFoundation,
+#     BurnoutDetector,
+#     CrisisIntervention,
+#     RecoveryProtocols,
+# )
 from .executive_function_expertise import (
     AttentionCoaching,
-    ImpulseManagement,
-    WorkingMemoryStrategies,
-    TimeManagement,
-    EmotionalRegulation,
-    FocusTechniques,
-    TaskInitiationSupport,
-    FrustrationManagement,
-    PlanningSupport,
-    TransitionCoaching,
-    SelfAwareness,
+    # Additional expertise modules will be imported here as they are implemented
+    # ImpulseManagement,
+    # WorkingMemoryStrategies,
+    # TimeManagement,
+    # EmotionalRegulation,
+    # FocusTechniques,
+    # TaskInitiationSupport,
+    # FrustrationManagement,
+    # PlanningSupport,
+    # TransitionCoaching,
+    # SelfAwareness,
 )
-from .real_world_feedback import (
-    SuccessStories,
-    FailureAnalysis,
-    FeedbackProcessor,
-)
+# Real world feedback module not yet implemented
+# from .real_world_feedback import (
+#     SuccessStories,
+#     FailureAnalysis,
+#     FeedbackProcessor,
+# )
 
 __all__ = [
     "BaseAide",
     "CoachingAction",
     "CoachingContext", 
     "BurnoutRisk",
-    "RRTFoundation",
-    "BurnoutDetector",
-    "CrisisIntervention",
-    "RecoveryProtocols",
+    # RRT Foundation exports will be added here when implemented
+    # "RRTFoundation",
+    # "BurnoutDetector",
+    # "CrisisIntervention",
+    # "RecoveryProtocols",
     "AttentionCoaching",
-    "ImpulseManagement",
-    "WorkingMemoryStrategies",
-    "TimeManagement",
-    "EmotionalRegulation",
-    "FocusTechniques",
-    "TaskInitiationSupport",
-    "FrustrationManagement",
-    "PlanningSupport",
-    "TransitionCoaching",
-    "SelfAwareness",
-    "SuccessStories",
-    "FailureAnalysis",
-    "FeedbackProcessor",
+    # Additional expertise exports will be added here as they are implemented
 ]

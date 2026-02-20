@@ -105,10 +105,115 @@ python scripts/setup_environment.py
 python scripts/run_training_session.py --avatar stay_alert --scenarios workplace.meeting_dynamics
 ```
 
+## 📂 Business Structure
+
+### 1-Person Structure (Sole Proprietorship)
+
+This structure is designed for a single founder (CEO) who manages all aspects of the business. The three divisions are managed as separate projects under the founder's direct oversight.
+
+- **neurodivergent-adhd-ai-fusion-system/**: The core product division.
+- **toi-otoi-framework/**: The division for the TOI-OTOI framework.
+- **rrt-aidvocai-te/**: The division for mental distress and burnout support.
+
+### 2-Person Structure (Partnership)
+
+This structure is designed for a two-person team (CEO + COO) to orchestrate a complete business operation through specialized AI agents.
+
+- **executive-agents/**: 3 core executive agents (CFO, CTO, CMO).
+- **department-agents/**: 12 department-level agents.
+- **human-interfaces/**: CEO and COO dashboards.
+
+## Agent Hierarchy
+
+### Executive Level (3 Agents)
+- **CFO Agent** - Financial strategy, planning, and oversight
+- **CTO Agent** - Technical strategy, architecture, and innovation  
+- **CMO Agent** - Brand strategy, marketing, and growth
+
+### Department Level (12 Agents)
+- **Business Development** (4): Sales, Marketing, Partnership, Investor Relations
+- **Operations** (4): Legal, HR, Project Management, Customer Success
+- **Technical** (4): Product Manager, QA, DevOps, Security
+
+## Key Features
+
+- **TOI-OTOI Integration** - Privacy-preserving, human-controlled AI agency
+- **Human Oversight** - CEO and COO maintain strategic and operational control
+- **Agent Coordination** - Structured communication and escalation protocols
+- **Performance Monitoring** - Real-time tracking of agent effectiveness
+- **Scalable Architecture** - Modular design for easy expansion and customization
+
+## Getting Started
+
+1. **Phase 1**: Foundation setup (Weeks 1-2)
+2. **Phase 2**: Executive layer deployment (Weeks 3-4)  
+3. **Phase 3**: Department layer deployment (Weeks 5-8)
+4. **Phase 4**: Optimization and tuning (Weeks 9-12)
+
+See `docs/playbooks/implementation-guide.md` for detailed instructions.
+
+## Support
+
+- **Architecture**: See `docs/architecture/`
+- **Playbooks**: See `docs/playbooks/`
+- **Training**: See `docs/training/`
+
+---
+
+*This framework enables two humans to effectively run a billion-dollar operation by orchestrating specialized AI agents while maintaining strategic control and operational oversight.*
+
 ## 📁 Repository Structure
 
 ```
 neurolift-ai-fusion/
+business-agents-repo/
+├── README.md                           # This file
+├── TOI-OTOI-INTEGRATION.md            # TOI-OTOI framework documentation
+├── HUMAN-OVERSIGHT-PROTOCOLS.md       # Human control and oversight guidelines
+├── AGENT-ORCHESTRATION-GUIDE.md       # How agents coordinate and communicate
+├── .github/                           # GitHub workflows and automation
+├── config/                            # Global configuration files
+├── business-structure/
+│   ├── 1-person-structure/
+│   │   ├── neurodivergent-adhd-ai-fusion-system/
+│   │   ├── toi-otoi-framework/
+│   │   └── rrt-aidvocai-te/
+│   └── 2-person-structure/
+│       ├── executive-agents/
+│       ├── department-agents/
+│       └── human-interfaces/
+├── shared-resources/                  # Templates, prompts, knowledge bases
+├── monitoring/                        # Agent performance and decision tracking
+└── docs/                             # Architecture and implementation guides
+
+src/
+├── avatars/         # Individual Avatar implementations
+├── aides/           # Aide support systems
+├── advocates/       # Fused Advocate intelligences
+└── fusion/          # TOI-OTOI fusion algorithms
+
+cloudflare/          # Cloudflare integration (NEW)
+├── connector.py     # Cloudflare API connector
+├── workers/         # Cloudflare Workers
+├── config/          # Configuration files
+└── utils/           # Deployment and helper scripts
+
+docs/
+├── framework/       # TOI-OTOI framework documentation
+├── architecture/    # System architecture and design
+├── business/        # Business plans and strategy
+└── cloudflare/      # Cloudflare setup guide
+
+config/
+├── avatars.yaml     # Avatar configurations
+├── fusion.yaml      # TOI-OTOI fusion parameters
+└── privacy.yaml     # Privacy and security settings
+
+assets/
+├── diagrams/        # Architecture diagrams
+├── mockups/         # UI/UX designs
+└── presentations/   # Business presentations
+neuroLift-simulation/
 ├── docs/                    # Comprehensive documentation
 ├── src/                     # Core implementation
 │   ├── avatars/            # Avatar system and ADHD traits
@@ -195,6 +300,32 @@ See [CONTRIBUTING.md](docs/contributing.md) for detailed guidelines.
 - [TOI-OTOI Integration](TOI-OTOI-INTEGRATION.md)
 - [Implementation Summary](docs/implementation_summary.md)
 
+## Infrastructure & Deployment
+
+### 🌐 Cloudflare Integration
+**Website**: neuroliftsolutions.com (Registered with Northwest Registered Agent)
+
+Our infrastructure leverages Cloudflare for:
+- **WordPress Hosting**: Optimized performance and caching
+- **Cloudflare Workers**: Serverless edge computing
+- **Cloudflare Pages**: Static site hosting for documentation and app interfaces
+- **CDN**: Global content delivery for fast access
+- **Security**: DDoS protection, WAF, and bot mitigation
+- **SSL/TLS**: Automatic HTTPS and encryption
+
+#### Quick Start
+```bash
+# Configure environment
+cp cloudflare/.env.example cloudflare/.env
+
+# Deploy everything
+cd cloudflare/utils
+./deploy.sh --all
+```
+
+**Documentation**: See [Cloudflare Setup Guide](docs/cloudflare/CLOUDFLARE_SETUP.md)
+
+## Business Model
 ## 🏆 Success Criteria
 
 We'll know we've succeeded when:
@@ -207,17 +338,10 @@ We'll know we've succeeded when:
 6. **Fusion Validated:** Resulting Advocate demonstrates both empathy and expertise
 7. **Community Ready:** Code is documented well enough for contributors
 
-## 📝 Notes
-
-### Voice Integration (Research Notes)
-- **Aimybox:** Check this voice SDK - it appears to be **mobile-only** (Android/iOS). Verify before planning desktop/web integration.
-
-### Deployment Options
-For a "Deploy to Cloudflare" button, the following is needed:
-- Add a deploy button badge to README: `[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/{username}/{repo})`
-- Ensure `wrangler.jsonc` or `wrangler.toml` configuration file exists for Cloudflare Workers/Pages
-- Configure required bindings (KV, D1, Queues, etc.) in the wrangler config
-
+- **Founder**: Joshua Dorsey
+- **Email**: neuro.edge24@gmail.com
+- **Website**: neuroliftsolutions.com
+- **Previous Domains**: neurolifttechnologies.com, .org, .info
 ## 📞 Contact
 
 **Primary Developer:** Joshua W. Dorsey, Sr. (ADHD cognitive profile)

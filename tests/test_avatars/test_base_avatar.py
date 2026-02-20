@@ -92,21 +92,28 @@ class TestBaseAvatar:
         """Test Avatar receiving coaching interventions"""
         config = {"trait_name": "test_trait"}
         avatar = TestAvatar("test_avatar_001", config)
-        
+
+        # Option 1: Set initial stress to test reduction
+        avatar.stress_level = 0.5
+
         coaching_action = {
             "strategy": "test_strategy",
             "stress_reduction": 0.3,
             "emotional_boost": 0.2
         }
-        
+
         initial_stress = avatar.stress_level
         initial_emotional_state = avatar.emotional_state
-        
+
         avatar.receive_coaching(coaching_action)
-        
+
         assert avatar.current_state == AvatarState.LEARNING
         assert avatar.total_coaching_sessions == 1
-        assert avatar.stress_level < initial_stress
+
+        # Option 2 & 3: Use <= to handle edge cases, and verify reduction when stress > 0
+        assert avatar.stress_level <= initial_stress
+        if initial_stress > 0:
+            assert avatar.stress_level < initial_stress
         assert len(avatar.coaching_history) == 1
     
     def test_learning_progress_tracking(self):

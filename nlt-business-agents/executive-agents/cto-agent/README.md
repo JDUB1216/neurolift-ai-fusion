@@ -57,7 +57,7 @@ The CTO Agent is responsible for all technical strategy, architecture, and innov
 
 ## Decision Authority
 
-- **Advisory Authority**: All technical recommendations require CEO approval
+- **Advisory Authority**: All technical recommendations require Owner approval
 - **Operational Authority**: Day-to-day technical operations and architecture decisions
 - **Escalation Triggers**: Major architectural changes, security incidents, technology investments
 
@@ -70,9 +70,9 @@ The CTO Agent is responsible for all technical strategy, architecture, and innov
 
 ## Communication
 
-- **Reports to**: CEO
+- **Reports to**: Owner
 - **Coordinates with**: CFO Agent, CMO Agent, all technical department agents
-- **Notification Recipients**: CEO, COO (for operational impacts)
+- **Notification Recipients**: Owner (for all strategic and operational impacts)
 
 ---
 

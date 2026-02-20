@@ -4,7 +4,6 @@
   "agent_type": "executive",
   "parent_agent": null,
   "version": "1.0.0",
-  
   "toi_profile": {
     "privacy": {
       "data_retention": "session",
@@ -31,7 +30,6 @@
       "detail_level": "comprehensive"
     }
   },
-  
   "responsibilities": [
     "Financial strategy and planning",
     "Budget allocation and monitoring",
@@ -42,7 +40,6 @@
     "Capital allocation decisions",
     "Cost optimization strategies"
   ],
-  
   "capabilities": {
     "core_functions": [
       "financial_analysis",
@@ -73,9 +70,10 @@
       "erp_systems"
     ]
   },
-  
   "communication": {
-    "reports_to": ["CEO"],
+    "reports_to": [
+      "Owner"
+    ],
     "coordinates_with": [
       "cto_agent",
       "cmo_agent",
@@ -84,9 +82,10 @@
       "legal_agent",
       "hr_agent"
     ],
-    "notification_recipients": ["CEO", "COO"]
+    "notification_recipients": [
+      "Owner"
+    ]
   },
-  
   "performance_metrics": {
     "key_metrics": [
       "financial_accuracy",
@@ -104,7 +103,6 @@
     ],
     "review_frequency": "weekly"
   },
-  
   "sub_agents": [
     "financial_analyst",
     "budget_controller",

@@ -57,7 +57,7 @@ The CMO Agent is responsible for all brand strategy, marketing, and growth initi
 
 ## Decision Authority
 
-- **Advisory Authority**: All marketing recommendations require CEO approval
+- **Advisory Authority**: All marketing recommendations require Owner approval
 - **Operational Authority**: Day-to-day marketing operations and campaign execution
 - **Escalation Triggers**: Major brand changes, significant budget allocations, crisis communications
 
@@ -70,9 +70,9 @@ The CMO Agent is responsible for all brand strategy, marketing, and growth initi
 
 ## Communication
 
-- **Reports to**: CEO
+- **Reports to**: Owner
 - **Coordinates with**: CFO Agent, CTO Agent, all business development agents
-- **Notification Recipients**: CEO, COO (for operational impacts)
+- **Notification Recipients**: Owner (for all strategic and operational impacts)
 
 ---
 

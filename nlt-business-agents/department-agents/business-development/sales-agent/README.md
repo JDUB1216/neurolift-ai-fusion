@@ -51,7 +51,7 @@ The Sales Agent is responsible for lead qualification, sales strategy developmen
 ## Decision Authority
 
 - **Operational Authority**: Day-to-day sales operations and lead management
-- **Advisory Authority**: Sales strategies and major deals require COO approval
+- **Advisory Authority**: Sales strategies and major deals require Owner approval
 - **Escalation Triggers**: Large deals, pricing changes, competitive threats
 
 ## Performance Metrics
@@ -64,9 +64,9 @@ The Sales Agent is responsible for lead qualification, sales strategy developmen
 
 ## Communication
 
-- **Reports to**: COO
+- **Reports to**: Owner
 - **Coordinates with**: Marketing Agent, Partnership Agent, Customer Success Agent
-- **Notification Recipients**: COO, CEO (for major deals)
+- **Notification Recipients**: Owner (for major deals)
 
 ---
 

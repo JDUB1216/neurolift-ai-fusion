@@ -22,7 +22,7 @@ This framework is optimized for solo entrepreneurs who need to:
 - Maintain complete oversight and control
 - Balance strategic planning with operational execution
 
-The business owner acts as the **CEO** with complete authority over all decisions, while AI agents provide:
+The business owner acts as the **sole decision-maker** with complete authority over all decisions, while AI agents provide:
 - Expert recommendations and analysis
 - Operational task execution
 - Routine process automation

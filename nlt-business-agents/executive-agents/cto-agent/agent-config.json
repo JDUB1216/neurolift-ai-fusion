@@ -4,7 +4,6 @@
   "agent_type": "executive",
   "parent_agent": null,
   "version": "1.0.0",
-  
   "toi_profile": {
     "privacy": {
       "data_retention": "session",
@@ -31,7 +30,6 @@
       "detail_level": "comprehensive"
     }
   },
-  
   "responsibilities": [
     "Technical vision and roadmap",
     "System architecture decisions",
@@ -42,7 +40,6 @@
     "Innovation assessment",
     "Technical debt management"
   ],
-  
   "capabilities": {
     "core_functions": [
       "technical_strategy",
@@ -73,9 +70,10 @@
       "code_repositories"
     ]
   },
-  
   "communication": {
-    "reports_to": ["CEO"],
+    "reports_to": [
+      "Owner"
+    ],
     "coordinates_with": [
       "cfo_agent",
       "cmo_agent",
@@ -84,9 +82,10 @@
       "security_agent",
       "qa_agent"
     ],
-    "notification_recipients": ["CEO", "COO"]
+    "notification_recipients": [
+      "Owner"
+    ]
   },
-  
   "performance_metrics": {
     "key_metrics": [
       "system_reliability",
@@ -104,7 +103,6 @@
     ],
     "review_frequency": "weekly"
   },
-  
   "sub_agents": [
     "solutions_architect",
     "security_officer",

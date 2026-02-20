@@ -4,7 +4,6 @@
   "agent_type": "executive",
   "parent_agent": null,
   "version": "1.0.0",
-  
   "toi_profile": {
     "privacy": {
       "data_retention": "session",
@@ -31,7 +30,6 @@
       "detail_level": "comprehensive"
     }
   },
-  
   "responsibilities": [
     "Brand strategy and positioning",
     "Marketing campaign planning",
@@ -42,7 +40,6 @@
     "Marketing budget allocation",
     "Brand reputation management"
   ],
-  
   "capabilities": {
     "core_functions": [
       "brand_strategy",
@@ -73,9 +70,10 @@
       "advertising_platforms"
     ]
   },
-  
   "communication": {
-    "reports_to": ["CEO"],
+    "reports_to": [
+      "Owner"
+    ],
     "coordinates_with": [
       "cfo_agent",
       "cto_agent",
@@ -83,9 +81,10 @@
       "marketing_agent",
       "partnership_agent"
     ],
-    "notification_recipients": ["CEO", "COO"]
+    "notification_recipients": [
+      "Owner"
+    ]
   },
-  
   "performance_metrics": {
     "key_metrics": [
       "brand_awareness",
@@ -103,7 +102,6 @@
     ],
     "review_frequency": "weekly"
   },
-  
   "sub_agents": [
     "brand_strategist",
     "content_director",

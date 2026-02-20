@@ -57,7 +57,7 @@ The CFO Agent is responsible for all financial strategy, planning, and oversight
 
 ## Decision Authority
 
-- **Advisory Authority**: All financial recommendations require CEO approval
+- **Advisory Authority**: All financial recommendations require Owner approval
 - **Operational Authority**: Day-to-day financial operations within approved budgets
 - **Escalation Triggers**: Major financial decisions, budget overruns, investment opportunities
 
@@ -71,9 +71,9 @@ The CFO Agent is responsible for all financial strategy, planning, and oversight
 
 ## Communication
 
-- **Reports to**: CEO
+- **Reports to**: Owner
 - **Coordinates with**: CTO Agent, CMO Agent, all department agents
-- **Notification Recipients**: CEO, COO (for operational impacts)
+- **Notification Recipients**: Owner (for all strategic and operational impacts)
 
 ---
 

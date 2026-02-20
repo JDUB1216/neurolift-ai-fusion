@@ -35,6 +35,7 @@ class SessionConfig:
     """Configuration for a training session."""
     max_attempts_per_scenario: int = 10
     max_coaching_per_attempt: int = 3
+    min_attempts_for_success_check: int = 3
     independence_target: float = 0.8
     success_rate_target: float = 0.7
     burnout_abort_threshold: float = 0.85
@@ -230,13 +231,15 @@ class SessionOrchestrator:
                 current_rate = sr.successes / sr.total_attempts
                 if (
                     current_rate >= self.config.success_rate_target
-                    and sr.total_attempts >= 3
+                    and sr.total_attempts >= self.config.min_attempts_for_success_check
                 ):
                     break
             else:
                 # Aide coaching loop
                 coaching_count = 0
                 while coaching_count < self.config.max_coaching_per_attempt:
+                    if sr.total_attempts >= self.config.max_attempts_per_scenario:
+                        break
                     coaching = self.aide.observe_and_coach(scenario)
                     if coaching is None:
                         break
@@ -250,6 +253,8 @@ class SessionOrchestrator:
                         sr.successes += 1
                         self.aide.track_intervention_effectiveness(coaching, retry)
                         break
+                    else:
+                        self.aide.track_intervention_effectiveness(coaching, retry)
 
             # Return to idle between attempts
             self.avatar.return_to_idle()

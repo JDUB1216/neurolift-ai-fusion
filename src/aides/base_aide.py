@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from ..core.events import EventBus, Signal, SignalType
 from ..core.protocols import (
@@ -158,6 +158,11 @@ class BaseAide(ABC):
     foundation for crisis response.
     """
 
+    RISK_STRESS_THRESHOLD = 0.7
+    RISK_LOAD_THRESHOLD = 0.8
+    RISK_BURNOUT_THRESHOLD = 0.5
+    RISK_COGNITIVE_LOAD_THRESHOLD = 0.7
+
     def __init__(
         self,
         aide_id: str,
@@ -197,6 +202,11 @@ class BaseAide(ABC):
         # Timestamps
         self.created_at = datetime.now()
         self.last_intervention = datetime.now()
+
+        # Avoid double-counting: when observe_and_coach returns a CoachingAction,
+        # orchestration will call track_intervention_effectiveness on retry.
+        # Skip _on_avatar_task_completed attribution when this is set.
+        self._pending_orchestration_track: bool = False
 
     # ------------------------------------------------------------------
     # Abstract interface — each expertise area implements these
@@ -300,10 +310,15 @@ class BaseAide(ABC):
         self._deliver_crisis_coaching(observation)
 
     def _on_avatar_task_completed(self, signal: Signal) -> None:
-        """Track effectiveness when Avatar completes a task after coaching."""
-        if self.intervention_history:
-            last_action = self.intervention_history[-1]
-            self._record_strategy_outcome(last_action.strategy, effective=True)
+        """Track effectiveness when Avatar completes a task after coaching.
+
+        Skips when orchestration will call track_intervention_effectiveness
+        (observe_and_coach just returned a CoachingAction) to avoid double-counting.
+        """
+        if not self.intervention_history or self._pending_orchestration_track:
+            return
+        last_action = self.intervention_history[-1]
+        self._record_strategy_outcome(last_action.strategy, effective=True)
 
     def _on_avatar_independence(self, signal: Signal) -> None:
         """Celebrate and record independence milestones."""
@@ -335,7 +350,10 @@ class BaseAide(ABC):
         if not self._should_intervene(observation):
             return None
 
-        return self._deliver_coaching(observation, task_context)
+        action = self._deliver_coaching(observation, task_context)
+        if action is not None:
+            self._pending_orchestration_track = True
+        return action
 
     def observe_avatar_struggle(
         self, avatar: BaseAvatar, task_context: Dict[str, Any]
@@ -409,6 +427,7 @@ class BaseAide(ABC):
             self._record_failure_pattern(action, avatar_result)
 
         self._record_strategy_outcome(action.strategy, effective)
+        self._pending_orchestration_track = False
 
     def get_coaching_effectiveness_metrics(self) -> Dict[str, Any]:
         total = max(self.total_interventions, 1)
@@ -420,7 +439,7 @@ class BaseAide(ABC):
             "success_rate": self.successful_interventions / total,
             "crisis_interventions": self.crisis_interventions,
             "independence_achievements": self.independence_achievements,
-            "strategy_effectiveness": self._get_strategy_effectiveness_summary(),
+            "strategy_effectiveness": self.get_strategy_effectiveness_summary(),
             "last_intervention": self.last_intervention.isoformat(),
         }
 
@@ -616,7 +635,7 @@ class BaseAide(ABC):
         if effective:
             rec.times_effective += 1
 
-    def _get_strategy_effectiveness_summary(self) -> Dict[str, Any]:
+    def get_strategy_effectiveness_summary(self) -> Dict[str, Any]:
         return {
             name: {
                 "times_used": rec.times_used,
@@ -631,9 +650,9 @@ class BaseAide(ABC):
 
     def _identify_risk_factors(self, avatar: BaseAvatar) -> List[str]:
         factors: List[str] = []
-        if avatar.stress_level > 0.7:
+        if avatar.stress_level > self.RISK_STRESS_THRESHOLD:
             factors.append("High stress level")
-        if avatar.cognitive_load > 0.8:
+        if avatar.cognitive_load > self.RISK_LOAD_THRESHOLD:
             factors.append("High cognitive load")
         if avatar.emotional_state in ("frustrated", "overwhelmed"):
             factors.append("Negative emotional state")
@@ -641,19 +660,19 @@ class BaseAide(ABC):
 
     def _detect_early_warning_signs(self, avatar: BaseAvatar) -> List[str]:
         signs: List[str] = []
-        if avatar.burnout_risk_level > 0.5:
+        if avatar.burnout_risk_level > self.RISK_BURNOUT_THRESHOLD:
             signs.append("Elevated burnout risk score")
         if avatar.emotional_state == "frustrated":
             signs.append("Increased frustration")
-        if avatar.cognitive_load > 0.7:
+        if avatar.cognitive_load > self.RISK_COGNITIVE_LOAD_THRESHOLD:
             signs.append("High cognitive load")
         return signs
 
     def _generate_intervention_recommendations(self, avatar: BaseAvatar) -> List[str]:
         recs: List[str] = []
-        if avatar.stress_level > 0.7:
+        if avatar.stress_level > self.RISK_STRESS_THRESHOLD:
             recs.append("Implement stress reduction techniques")
-        if avatar.cognitive_load > 0.8:
+        if avatar.cognitive_load > self.RISK_LOAD_THRESHOLD:
             recs.append("Reduce task complexity")
         if avatar.emotional_state in ("frustrated", "overwhelmed"):
             recs.append("Provide emotional support and validation")

@@ -165,14 +165,21 @@ class FusionEngine:
             ],
         )
 
-        report.success = True
+        report.success = validation.get("all_passed", False)
         report.fusion_result = fusion_result
-
-        self._emit(SignalType.FUSION_COMPLETED, {
-            "advocate_id": advocate_id,
-            "quality_score": quality_score,
-            "empathy_level": empathy_level.value,
-        })
+        if not report.success:
+            report.failure_reason = "Validation checks failed"
+            self._emit(SignalType.FUSION_FAILED, {
+                "reason": report.failure_reason,
+                "advocate_id": advocate_id,
+                "quality_score": quality_score,
+            })
+        else:
+            self._emit(SignalType.FUSION_COMPLETED, {
+                "advocate_id": advocate_id,
+                "quality_score": quality_score,
+                "empathy_level": empathy_level.value,
+            })
 
         self._fusion_history.append(report)
         return report
@@ -243,7 +250,7 @@ class FusionEngine:
         expertise_areas = [aide.expertise_area]
 
         # Coaching strategies that proved effective
-        effective = aide._get_strategy_effectiveness_summary()
+        effective = aide.get_strategy_effectiveness_summary()
         strategies = [
             name for name, info in effective.items()
             if info.get("effectiveness", 0) > 0.5

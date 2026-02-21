@@ -252,6 +252,7 @@ class BaseAvatar(ABC):
         self.learning_progress: Dict[str, LearningProgress] = {}
         self.struggle_patterns: List[Dict[str, Any]] = []
         self.coaching_history: List[Dict[str, Any]] = []
+        self._current_task_start_time: Optional[datetime] = None
 
         # Recent task results ring buffer (for burnout assessment)
         self._recent_results: List[TaskResult] = []
@@ -330,6 +331,9 @@ class BaseAvatar(ABC):
         self._transition(AvatarState.ATTEMPTING_TASK, "task_start")
         self.last_activity = datetime.now()
         self.total_tasks_attempted += 1
+        
+        # Track when this task attempt started for coaching detection
+        self._current_task_start_time = datetime.now()
 
         # Emit task-start signal
         self._emit(SignalType.AVATAR_TASK_STARTED, {
@@ -368,6 +372,20 @@ class BaseAvatar(ABC):
         self._update_emotional_state(success, struggle_indicators)
         self._update_cognitive_load(task_context, trait_impact)
 
+        # Determine if attempt was independent (no coaching during this task attempt)
+        # Check if any coaching was received after this task attempt started
+        received_coaching_this_attempt = False
+        if self._current_task_start_time and self.coaching_history:
+            # Iterate in reverse order for better performance (recent coaching is at the end)
+            for coaching in reversed(self.coaching_history):
+                coaching_time = coaching.get("timestamp", datetime.min)
+                if coaching_time >= self._current_task_start_time:
+                    received_coaching_this_attempt = True
+                    break
+                # If we've gone back before the task started, no need to continue
+                if coaching_time < self._current_task_start_time:
+                    break
+        
         # Determine if attempt was independent (no coaching this attempt)
         received_coaching_this_attempt = task_context.get(
             "received_coaching_this_attempt", False

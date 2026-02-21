@@ -176,7 +176,7 @@ class ReadinessAssessor:
     def _assess_emotional_resilience(self, avatar: BaseAvatar) -> DimensionScore:
         """Has the Avatar built emotional coping capacity?"""
         # Look at emotional journey in experiences
-        records = list(avatar.experience_memory)
+        records = avatar.experience_memory.get_all_records()
         if not records:
             return DimensionScore(
                 dimension=FusionDimension.EMOTIONAL_RESILIENCE,
@@ -234,6 +234,7 @@ class ReadinessAssessor:
             aide_strategies = {}
         else:
             aide_strategies = get_effectiveness()
+        aide_strategies = aide.get_strategy_effectiveness_summary()
 
         # Overlap: strategies the Aide taught that the Avatar now uses independently
         internalised = set(effective.keys()) & set(aide_strategies.keys())

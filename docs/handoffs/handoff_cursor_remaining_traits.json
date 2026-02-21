@@ -4,7 +4,7 @@
   "to": "cursor",
   "priority": "high",
   "title": "Implement Remaining 18 Avatar Trait Subclasses",
-  "description": "The base class architecture is complete. Each remaining ADHD trait needs a concrete subclass implementing get_adhd_trait_impact() and simulate_struggle(). Follow the AttentionDeficit pattern in src/avatars/adhd_traits/attention_deficit.py.",
+  "description": "The base class architecture is complete. Each remaining ADHD trait needs a concrete subclass implementing get_adhd_trait_impact() and simulate_struggle(). See the implementation_pattern section below for a complete code example. Reference implementation available in src/avatars/adhd_traits/attention_deficit.py.",
   "deliverables": [
     "src/avatars/adhd_traits/impulsivity.py",
     "src/avatars/adhd_traits/working_memory.py",
@@ -25,16 +25,84 @@
     "src/avatars/adhd_traits/sensory_seeking.py",
     "src/avatars/adhd_traits/identity_challenges.py"
   ],
-  "pattern_to_follow": "src/avatars/adhd_traits/attention_deficit.py",
+  "pattern_to_follow": "See implementation_pattern below for a complete example",
   "base_class": "src/avatars/base_avatar.py (BaseAvatar)",
   "required_methods": [
-    "get_adhd_trait_impact(task_context) -> Dict with difficulty_modifier, quality_modifier, time_modifier, cognitive_load_modifier",
+    "get_adhd_trait_impact(task_context) -> Dict with difficulty_modifier, quality_modifier, time_modifier, cognitive_load_modifier, and struggle_indicators",
     "simulate_struggle(task_context) -> List[str] of struggle indicators"
   ],
+  "implementation_pattern": {
+    "description": "Minimal implementation pattern for ADHD trait subclasses. See src/avatars/adhd_traits/attention_deficit.py for a complete reference implementation.",
+    "minimal_example": {
+      "class_structure": {
+        "pattern": "class TraitName(BaseAvatar):",
+        "note": "Inherit from BaseAvatar"
+      },
+      "constructor": {
+        "signature": "def __init__(self, avatar_id, trait_config, event_bus=None):",
+        "steps": [
+          "Call super().__init__(avatar_id, trait_config, event_bus=event_bus)",
+          "Extract and store trait-specific config, e.g., self.intensity = trait_config.get('intensity', 0.7)"
+        ]
+      },
+      "get_adhd_trait_impact": {
+        "signature": "def get_adhd_trait_impact(self, task_context: Dict[str, Any]) -> Dict[str, Any]:",
+        "returns": {
+          "difficulty_modifier": {
+            "type": "float",
+            "range": "1.0 = baseline, >1.0 = harder",
+            "description": "How much the trait increases task difficulty"
+          },
+          "quality_modifier": {
+            "type": "float",
+            "range": "0.0-1.0",
+            "description": "Quality degradation where 0.0 = no degradation, higher values = more degradation"
+          },
+          "time_modifier": {
+            "type": "float",
+            "range": "1.0 = baseline, >1.0 = takes longer",
+            "description": "How much the trait increases time needed"
+          },
+          "cognitive_load_modifier": {
+            "type": "float",
+            "range": "0.0-1.0",
+            "description": "Additional cognitive load imposed by the trait"
+          },
+          "struggle_indicators": {
+            "type": "List[str]",
+            "description": "Passive/diagnostic - observable state measurements",
+            "examples": ["high_distraction_level", "low_engagement_detected"]
+          }
+        }
+      },
+      "simulate_struggle": {
+        "signature": "def simulate_struggle(self, task_context: Dict[str, Any]) -> List[str]:",
+        "returns": {
+          "type": "List[str]",
+          "description": "Active/behavioral - specific actions/events that happened",
+          "examples": ["abandoned_task", "interrupted_work", "acted_impulsively"]
+        }
+      }
+    },
+    "key_points": [
+      "Inherit from BaseAvatar and call super().__init__() with event_bus parameter",
+      "Store trait-specific configuration from trait_config parameter",
+      "Implement get_adhd_trait_impact() returning all required modifiers",
+      "Implement simulate_struggle() returning list of struggle indicators",
+      "Use helper methods to organize trait-specific logic",
+      "Base calculations on task_context (task type, duration, complexity, etc.)",
+      "Make struggles authentic to the specific ADHD trait based on research",
+      "struggle_indicators (in get_adhd_trait_impact) are passive/diagnostic - observable state measurements like \"high_distraction_level\" or \"low_engagement_detected\"",
+      "simulate_struggle() returns active/behavioral - specific actions/events that happened like \"abandoned_task\", \"interrupted_work\", or \"acted_impulsively\""
+    ],
+    "reference_implementation": "src/avatars/adhd_traits/attention_deficit.py"
+  },
   "notes": [
+    "Pattern file src/avatars/adhd_traits/attention_deficit.py exists in the repository as a reference implementation",
     "Each trait should have unique struggle patterns based on ADHD research",
     "Use the ExperienceMemory system (inherited from BaseAvatar) — don't bypass it",
     "New Avatar constructor should accept optional EventBus for shared event bus",
-    "Update attention_deficit.py constructor to also accept event_bus kwarg"
+    "Update attention_deficit.py constructor to also accept event_bus kwarg",
+    "See implementation_pattern above for complete example code"
   ]
 }

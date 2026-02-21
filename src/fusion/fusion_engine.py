@@ -243,7 +243,14 @@ class FusionEngine:
         expertise_areas = [aide.expertise_area]
 
         # Coaching strategies that proved effective
-        effective = aide._get_strategy_effectiveness_summary()
+        # Prefer a public API on the Aide; fall back to legacy private method if needed.
+        get_effectiveness = getattr(aide, "get_strategy_effectiveness_summary", None)
+        if get_effectiveness is None:
+            legacy_get_effectiveness = getattr(aide, "_get_strategy_effectiveness_summary", None)
+            if legacy_get_effectiveness is not None:
+                get_effectiveness = legacy_get_effectiveness
+
+        effective = get_effectiveness() if get_effectiveness is not None else {}
         strategies = [
             name for name, info in effective.items()
             if info.get("effectiveness", 0) > 0.5

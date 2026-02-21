@@ -215,7 +215,7 @@ class ReadinessAssessor:
     ) -> DimensionScore:
         """Has the Avatar adopted coaching strategies as its own?"""
         effective = avatar.experience_memory.get_effective_strategies()
-        aide_strategies = aide._get_strategy_effectiveness_summary()
+        aide_strategies = aide.get_strategy_effectiveness_summary()
 
         # Overlap: strategies the Aide taught that the Avatar now uses independently
         internalised = set(effective.keys()) & set(aide_strategies.keys())

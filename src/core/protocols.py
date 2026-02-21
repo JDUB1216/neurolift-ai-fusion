@@ -327,3 +327,7 @@ class ExperienceMemory:
         if not self._records:
             return 0.0
         return sum(1 for r in self._records if r.outcome_success) / len(self._records)
+    
+    def get_all_records(self) -> List[ExperienceRecord]:
+        """Return all stored experience records."""
+        return list(self._records)

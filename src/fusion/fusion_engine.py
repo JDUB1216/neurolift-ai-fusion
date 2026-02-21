@@ -165,6 +165,21 @@ class FusionEngine:
             ],
         )
 
+        if not validation['all_passed'] and not force:
+            report.failure_reason = (
+                f"Validation failed: {[k for k, v in validation['checks'].items() if not v]}"
+            )
+            self._emit(SignalType.FUSION_FAILED, {
+                'reason': report.failure_reason,
+                'validation': validation,
+            })
+            self._fusion_history.append(report)
+            return report
+
+        # If forced but validation failed, still mark but add warning note
+        if not validation['all_passed']:
+            fusion_result.fusion_notes.append("WARNING: Validation overridden via force=True")
+
         report.success = True
         report.fusion_result = fusion_result
 

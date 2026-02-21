@@ -277,7 +277,7 @@ For `session_orchestrator.py:233`, adding `min_attempts_for_success_check` to `S
 **Flagged by:** Copilot
 **Verdict:** Agreed — minor documentation issue.
 
-The handoff references `src/avatars/adhd_traits/attention_deficit.py` as a pattern file, but this file doesn't exist in the PR or the repo. Either include it or update the handoff to reference `tests/test_simulation/test_session_orchestrator.py::_TestAvatar` as the implementation pattern. Not a code issue, but could mislead developers.
+The handoff references `src/avatars/adhd_traits/attention_deficit.py` as a pattern file. That file now exists in the repo; to make the handoff clearer, confirm this is the intended reference and consider also pointing to `tests/test_simulation/test_session_orchestrator.py::_TestAvatar` as a concrete usage pattern. Not a code issue, but unclear documentation could mislead developers.
 
 ---
 

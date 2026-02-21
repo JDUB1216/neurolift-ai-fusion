@@ -107,7 +107,8 @@
       "Implement simulate_struggle() returning list of struggle indicators",
       "Use helper methods to organize trait-specific logic",
       "Base calculations on task_context (task type, duration, complexity, etc.)",
-      "Make struggles authentic to the specific ADHD trait based on research"
+      "Make struggles authentic to the specific ADHD trait based on research",
+      "Note: struggle_indicators in get_adhd_trait_impact() are passive/diagnostic (state-based), while simulate_struggle() returns active struggles that may modify avatar state"
     ],
     "reference_implementation": "src/avatars/adhd_traits/attention_deficit.py"
   },

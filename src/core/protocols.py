@@ -318,6 +318,15 @@ class ExperienceMemory:
             trajectory.append(min(1.0, max(0.0, cumulative)))
         return trajectory
 
+    def __iter__(self):
+        """
+        Iterate over experience records.
+        
+        Yields:
+            ExperienceRecord: Individual experience records from the memory.
+        """
+        return iter(self._records)
+
     @property
     def total_experiences(self) -> int:
         return len(self._records)

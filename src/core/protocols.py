@@ -355,5 +355,11 @@ class ExperienceMemory:
         return sum(1 for r in self._records if r.outcome_success) / len(self._records)
     
     def get_all_records(self) -> List[ExperienceRecord]:
-        """Return all stored experience records."""
-        return list(self._records)
+        """
+        Return all stored experience records.
+
+        Deprecated:
+            Use `get_records()` without arguments instead. This method is kept
+            for backward compatibility and may be removed in a future version.
+        """
+        return self.get_records()

@@ -150,3 +150,72 @@ class TestSessionOrchestrator:
         assert "session_id" in d
         assert "scenarios" in d
         assert isinstance(d["scenarios"], list)
+
+    def test_retry_respects_global_max_attempts(self):
+        avatar, aide = self._make_pair()
+        config = SessionConfig(
+            max_attempts_per_scenario=1,
+            max_coaching_per_attempt=5,
+        )
+        orchestrator = SessionOrchestrator(avatar, aide, config)
+
+        with patch("random.random", return_value=0.99):
+            result = orchestrator.run_session([
+                {
+                    "name": "Cap Attempts",
+                    "task_type": "cap_test",
+                    "base_success_rate": 0.1,
+                    "cognitive_demand": 0.8,
+                }
+            ])
+
+        sr = result.scenario_results[0]
+        assert sr.total_attempts == 1
+
+    def test_failed_retry_is_tracked_for_intervention_effectiveness(self):
+        avatar, aide = self._make_pair()
+        config = SessionConfig(
+            max_attempts_per_scenario=2,
+            max_coaching_per_attempt=1,
+            check_fusion_readiness=False,
+        )
+        orchestrator = SessionOrchestrator(avatar, aide, config)
+
+        with patch.object(aide, "track_intervention_effectiveness") as tracker:
+            with patch("random.random", return_value=0.99):
+                orchestrator.run_session([
+                    {
+                        "name": "Retry Tracking",
+                        "task_type": "retry_tracking",
+                        "base_success_rate": 0.1,
+                        "cognitive_demand": 0.8,
+                    }
+                ])
+
+        assert tracker.called
+        _, tracked_result = tracker.call_args.args
+        assert tracked_result.success is False
+
+    def test_min_attempts_for_success_check_is_configurable(self):
+        avatar, aide = self._make_pair()
+        config = SessionConfig(
+            max_attempts_per_scenario=5,
+            max_coaching_per_attempt=0,
+            min_attempts_for_success_check=1,
+            success_rate_target=0.7,
+            check_fusion_readiness=False,
+        )
+        orchestrator = SessionOrchestrator(avatar, aide, config)
+
+        with patch("random.random", return_value=0.01):
+            result = orchestrator.run_session([
+                {
+                    "name": "Fast Exit",
+                    "task_type": "fast_exit",
+                    "base_success_rate": 0.9,
+                    "cognitive_demand": 0.2,
+                }
+            ])
+
+        sr = result.scenario_results[0]
+        assert sr.total_attempts == 1

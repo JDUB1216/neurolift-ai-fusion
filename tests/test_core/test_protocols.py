@@ -127,3 +127,16 @@ class TestExperienceMemory:
         mem.record(self._make_record(success=True))
         mem.record(self._make_record(success=False))
         assert mem.success_rate == 0.5
+
+    def test_get_records_public_accessor(self):
+        mem = ExperienceMemory(owner_id="a1")
+        mem.record(self._make_record(task_type="a"))
+        mem.record(self._make_record(task_type="b"))
+        mem.record(self._make_record(task_type="c"))
+
+        all_records = mem.get_records()
+        assert len(all_records) == 3
+
+        limited = mem.get_records(limit=2)
+        assert len(limited) == 2
+        assert [r.task_type for r in limited] == ["b", "c"]

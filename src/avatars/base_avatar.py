@@ -132,6 +132,16 @@ class LearningProgress:
 
 
 # ---------------------------------------------------------------------------
+# Learning/independence tuning constants
+# ---------------------------------------------------------------------------
+
+INDEPENDENCE_GAIN_INDEPENDENT_SUCCESS = 0.1
+INDEPENDENCE_GAIN_COACHED_SUCCESS = 0.05
+INDEPENDENCE_LOSS_ON_FAILURE = 0.02
+INDEPENDENCE_COACHING_LOOKBACK_SECONDS = 60
+
+
+# ---------------------------------------------------------------------------
 # Helper: build the Avatar state machine with valid transitions
 # ---------------------------------------------------------------------------
 
@@ -262,6 +272,7 @@ class BaseAvatar(ABC):
         self.total_tasks_completed: int = 0
         self.total_coaching_sessions: int = 0
         self.burnout_risk_level: float = 0.0
+        self._received_coaching_since_last_attempt: bool = False
 
         # Timestamps
         self.created_at = datetime.now()
@@ -327,6 +338,9 @@ class BaseAvatar(ABC):
         4. Record experience and emit signals
         5. Transition to LEARNING (success) or STRUGGLING (failure)
         """
+        received_coaching_this_attempt = self._received_coaching_since_last_attempt
+        self._received_coaching_since_last_attempt = False
+
         self._transition(AvatarState.ATTEMPTING_TASK, "task_start")
         self.last_activity = datetime.now()
         self.total_tasks_attempted += 1
@@ -369,12 +383,13 @@ class BaseAvatar(ABC):
         self._update_cognitive_load(task_context, trait_impact)
 
         # Determine if attempt was independent (no coaching this attempt)
-        independent = len(self.coaching_history) == 0 or (
+        no_recent_coaching = len(self.coaching_history) == 0 or (
             self.coaching_history
             and (datetime.now() - self.coaching_history[-1].get(
                 "timestamp", datetime.now()
-            )).total_seconds() > 60
+            )).total_seconds() > INDEPENDENCE_COACHING_LOOKBACK_SECONDS
         )
+        independent = (not received_coaching_this_attempt) and no_recent_coaching
 
         result = TaskResult(
             success=success,
@@ -427,6 +442,7 @@ class BaseAvatar(ABC):
         avatar_state_before = self.current_state.value
         self._transition(AvatarState.RECEIVING_COACHING, "coaching_received")
         self.total_coaching_sessions += 1
+        self._received_coaching_since_last_attempt = True
 
         self.coaching_history.append({
             "timestamp": datetime.now(),
@@ -637,7 +653,11 @@ class BaseAvatar(ABC):
             outcome_success=result.success,
             quality_score=result.quality_score,
             coaching_received=coaching_recent,
-            independence_delta=0.1 if result.independent and result.success else 0.0,
+            independence_delta=(
+                INDEPENDENCE_GAIN_INDEPENDENT_SUCCESS
+                if result.independent and result.success
+                else 0.0
+            ),
             strategy_discovered=(
                 result.strategies_used[0] if result.strategies_used else None
             ),
@@ -700,11 +720,15 @@ class BaseAvatar(ABC):
                 progress.independent_successes += 1
                 progress.independence_milestones.append(datetime.now())
                 progress.current_independence_level = min(
-                    1.0, progress.current_independence_level + 0.1
+                    1.0,
+                    progress.current_independence_level
+                    + INDEPENDENCE_GAIN_INDEPENDENT_SUCCESS,
                 )
             else:
                 progress.current_independence_level = min(
-                    1.0, progress.current_independence_level + 0.05
+                    1.0,
+                    progress.current_independence_level
+                    + INDEPENDENCE_GAIN_COACHED_SUCCESS,
                 )
             progress.last_improvement = datetime.now()
         else:
@@ -712,7 +736,8 @@ class BaseAvatar(ABC):
             progress.consecutive_successes = 0
             # Slight independence regression on failure
             progress.current_independence_level = max(
-                0.0, progress.current_independence_level - 0.02
+                0.0,
+                progress.current_independence_level - INDEPENDENCE_LOSS_ON_FAILURE,
             )
 
     def _apply_coaching_effects(self, coaching_action: Dict[str, Any]) -> None:

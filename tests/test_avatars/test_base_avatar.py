@@ -91,6 +91,20 @@ class TestBaseAvatar:
         assert len(avatar.coaching_history) == 1
         assert avatar.coaching_history[0]["avatar_state_before"] == AvatarState.STRUGGLING.value
 
+    def test_attempt_not_marked_independent_when_coached_before_attempt(self):
+        avatar = TestAvatar("a1", {"trait_name": "t"})
+        avatar.current_state = AvatarState.STRUGGLING
+
+        coaching = {"strategy": "test", "stress_reduction": 0.2, "emotional_boost": 0.1}
+        avatar.receive_coaching(coaching)
+        # Simulate delayed retry so timestamp-only checks would misclassify.
+        avatar.coaching_history[-1]["timestamp"] = datetime.now() - timedelta(minutes=5)
+
+        with patch("random.random", return_value=0.01):
+            result = avatar.attempt_task({"task_type": "focus", "base_success_rate": 0.9})
+
+        assert result.independent is False
+
     def test_learning_progress_tracking(self):
         avatar = TestAvatar("a1", {"trait_name": "t"})
         task = {"task_type": "focus_task", "base_success_rate": 0.5}

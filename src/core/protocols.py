@@ -8,7 +8,7 @@ lets Avatars learn through doing rather than through data.
 
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import Any, Deque, Dict, List, Optional
+from typing import Any, ClassVar, Deque, Dict, List, Optional
 from collections import deque
 from datetime import datetime
 import uuid
@@ -85,15 +85,25 @@ class ObservationReport:
     burnout_risk: float = 0.0
     timestamp: datetime = field(default_factory=datetime.now)
 
+    STRESS_INTERVENTION_THRESHOLD: ClassVar[float] = 0.7
+    LOAD_INTERVENTION_THRESHOLD: ClassVar[float] = 0.8
+    BURNOUT_INTERVENTION_THRESHOLD: ClassVar[float] = 0.6
+    STRUGGLE_COUNT_INTERVENTION_THRESHOLD: ClassVar[int] = 3
+    INTERVENTION_EMOTIONAL_STATES: ClassVar[tuple[str, ...]] = (
+        "frustrated",
+        "overwhelmed",
+        "defeated",
+    )
+
     @property
     def needs_intervention(self) -> bool:
         """Quick check: does this snapshot warrant aide action?"""
         return (
-            self.stress_level > 0.7
-            or self.cognitive_load > 0.8
-            or self.burnout_risk > 0.6
-            or self.emotional_state in ("frustrated", "overwhelmed", "defeated")
-            or len(self.active_struggles) >= 3
+            self.stress_level > self.STRESS_INTERVENTION_THRESHOLD
+            or self.cognitive_load > self.LOAD_INTERVENTION_THRESHOLD
+            or self.burnout_risk > self.BURNOUT_INTERVENTION_THRESHOLD
+            or self.emotional_state in self.INTERVENTION_EMOTIONAL_STATES
+            or len(self.active_struggles) >= self.STRUGGLE_COUNT_INTERVENTION_THRESHOLD
         )
 
 
@@ -263,6 +273,17 @@ class ExperienceMemory:
     def record(self, experience: ExperienceRecord) -> None:
         """Store a new experience."""
         self._records.append(experience)
+
+    def get_records(self, limit: Optional[int] = None) -> List[ExperienceRecord]:
+        """Public accessor for stored experience records."""
+        records = list(self._records)
+        if limit is None:
+            return records
+        return records[-limit:]
+
+    def get_all_records(self) -> List[ExperienceRecord]:
+        """Backward-compatible alias for full record access."""
+        return self.get_records()
 
     def recall_by_task(self, task_type: str, limit: int = 20) -> List[ExperienceRecord]:
         """Recall experiences for a specific task type."""

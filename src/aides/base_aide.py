@@ -38,6 +38,16 @@ from ..avatars.base_avatar import BaseAvatar, AvatarState, TaskResult
 
 
 # ---------------------------------------------------------------------------
+# Tuning constants
+# ---------------------------------------------------------------------------
+
+INTERVENTION_ATTRIBUTION_WINDOW = timedelta(minutes=10)
+HIGH_STRESS_RISK_THRESHOLD = 0.7
+HIGH_COGNITIVE_LOAD_RISK_THRESHOLD = 0.8
+NEGATIVE_EMOTIONAL_STATES = ("frustrated", "overwhelmed")
+
+
+# ---------------------------------------------------------------------------
 # Enums and data classes
 # ---------------------------------------------------------------------------
 
@@ -179,6 +189,7 @@ class BaseAide(ABC):
 
         # Strategy effectiveness learning
         self._strategy_records: Dict[str, _StrategyRecord] = {}
+        self._pending_interventions: Dict[str, datetime] = {}
 
         # Coaching state
         self.intervention_history: List[CoachingAction] = []
@@ -301,9 +312,34 @@ class BaseAide(ABC):
 
     def _on_avatar_task_completed(self, signal: Signal) -> None:
         """Track effectiveness when Avatar completes a task after coaching."""
-        if self.intervention_history:
-            last_action = self.intervention_history[-1]
-            self._record_strategy_outcome(last_action.strategy, effective=True)
+        if not self.intervention_history:
+            return
+
+        last_action = self.intervention_history[-1]
+        if last_action.action_id not in self._pending_interventions:
+            return
+
+        signal_data = getattr(signal, "data", {}) or {}
+        completed_raw = signal_data.get("timestamp")
+        if isinstance(completed_raw, datetime):
+            completion_time = completed_raw
+        elif isinstance(completed_raw, str):
+            try:
+                completion_time = datetime.fromisoformat(completed_raw)
+            except ValueError:
+                completion_time = datetime.now()
+        else:
+            completion_time = datetime.now()
+
+        if completion_time < last_action.timestamp:
+            return
+
+        if completion_time - last_action.timestamp > INTERVENTION_ATTRIBUTION_WINDOW:
+            self._pending_interventions.pop(last_action.action_id, None)
+            return
+
+        self._record_strategy_outcome(last_action.strategy, effective=True)
+        self._pending_interventions.pop(last_action.action_id, None)
 
     def _on_avatar_independence(self, signal: Signal) -> None:
         """Celebrate and record independence milestones."""
@@ -409,6 +445,7 @@ class BaseAide(ABC):
             self._record_failure_pattern(action, avatar_result)
 
         self._record_strategy_outcome(action.strategy, effective)
+        self._pending_interventions.pop(action.action_id, None)
 
     def get_coaching_effectiveness_metrics(self) -> Dict[str, Any]:
         total = max(self.total_interventions, 1)
@@ -420,7 +457,7 @@ class BaseAide(ABC):
             "success_rate": self.successful_interventions / total,
             "crisis_interventions": self.crisis_interventions,
             "independence_achievements": self.independence_achievements,
-            "strategy_effectiveness": self._get_strategy_effectiveness_summary(),
+            "strategy_effectiveness": self.get_strategy_effectiveness_summary(),
             "last_intervention": self.last_intervention.isoformat(),
         }
 
@@ -460,6 +497,7 @@ class BaseAide(ABC):
         self.intervention_history.append(action)
         self.total_interventions += 1
         self.last_intervention = datetime.now()
+        self._pending_interventions[action.action_id] = action.timestamp
 
         self._emit(SignalType.AIDE_COACHING_DELIVERED, {
             "strategy": action.strategy,
@@ -488,6 +526,7 @@ class BaseAide(ABC):
         self.total_interventions += 1
         self.crisis_interventions += 1
         self.last_intervention = datetime.now()
+        self._pending_interventions[action.action_id] = action.timestamp
         return action
 
     def _build_crisis_action(self) -> CoachingAction:
@@ -616,7 +655,7 @@ class BaseAide(ABC):
         if effective:
             rec.times_effective += 1
 
-    def _get_strategy_effectiveness_summary(self) -> Dict[str, Any]:
+    def get_strategy_effectiveness_summary(self) -> Dict[str, Any]:
         return {
             name: {
                 "times_used": rec.times_used,
@@ -625,17 +664,21 @@ class BaseAide(ABC):
             for name, rec in self._strategy_records.items()
         }
 
+    def _get_strategy_effectiveness_summary(self) -> Dict[str, Any]:
+        """Backward-compatible alias for existing callers."""
+        return self.get_strategy_effectiveness_summary()
+
     # ------------------------------------------------------------------
     # Private helpers — risk assessment
     # ------------------------------------------------------------------
 
     def _identify_risk_factors(self, avatar: BaseAvatar) -> List[str]:
         factors: List[str] = []
-        if avatar.stress_level > 0.7:
+        if avatar.stress_level > HIGH_STRESS_RISK_THRESHOLD:
             factors.append("High stress level")
-        if avatar.cognitive_load > 0.8:
+        if avatar.cognitive_load > HIGH_COGNITIVE_LOAD_RISK_THRESHOLD:
             factors.append("High cognitive load")
-        if avatar.emotional_state in ("frustrated", "overwhelmed"):
+        if avatar.emotional_state in NEGATIVE_EMOTIONAL_STATES:
             factors.append("Negative emotional state")
         return factors
 
@@ -651,11 +694,11 @@ class BaseAide(ABC):
 
     def _generate_intervention_recommendations(self, avatar: BaseAvatar) -> List[str]:
         recs: List[str] = []
-        if avatar.stress_level > 0.7:
+        if avatar.stress_level > HIGH_STRESS_RISK_THRESHOLD:
             recs.append("Implement stress reduction techniques")
-        if avatar.cognitive_load > 0.8:
+        if avatar.cognitive_load > HIGH_COGNITIVE_LOAD_RISK_THRESHOLD:
             recs.append("Reduce task complexity")
-        if avatar.emotional_state in ("frustrated", "overwhelmed"):
+        if avatar.emotional_state in NEGATIVE_EMOTIONAL_STATES:
             recs.append("Provide emotional support and validation")
         return recs
 

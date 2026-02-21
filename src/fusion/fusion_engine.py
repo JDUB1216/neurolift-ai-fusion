@@ -258,7 +258,7 @@ class FusionEngine:
         expertise_areas = [aide.expertise_area]
 
         # Coaching strategies that proved effective
-        effective = aide._get_strategy_effectiveness_summary()
+        effective = aide.get_strategy_effectiveness_summary()
         strategies = [
             name for name, info in effective.items()
             if info.get("effectiveness", 0) > 0.5

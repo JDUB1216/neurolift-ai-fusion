@@ -35,8 +35,8 @@
     "description": "Minimal implementation pattern for ADHD trait subclasses. See src/avatars/adhd_traits/attention_deficit.py for a complete reference implementation.",
     "minimal_example": {
       "class_structure": "class TraitName(BaseAvatar): inherit from BaseAvatar",
-      "constructor": "def __init__(self, avatar_id, trait_config, event_bus=None): call super().__init__(avatar_id, trait_config, event_bus=event_bus)",
-      "get_adhd_trait_impact": "Returns dict with: difficulty_modifier (float, 1.0=baseline, >1.0=harder), quality_modifier (float, 0.0=no impact, <0=quality reduction), time_modifier (float, 1.0=baseline, >1.0=takes longer), cognitive_load_modifier (float, 0.0-1.0 scale), struggle_indicators (list of passive/diagnostic symptoms like 'high_distraction', 'low_focus')",
+      "constructor": "def __init__(self, avatar_id, trait_config, event_bus=None): call super().__init__(avatar_id, trait_config, event_bus=event_bus), then extract and store trait-specific config like self.intensity = trait_config.get('intensity', 0.7)",
+      "get_adhd_trait_impact": "Returns dict with: difficulty_modifier (float, 1.0=baseline, >1.0=harder), quality_modifier (float, 0.0-1.0 where 0.0=no quality reduction, higher=more reduction), time_modifier (float, 1.0=baseline, >1.0=takes longer), cognitive_load_modifier (float, 0.0-1.0 scale), struggle_indicators (list of passive/diagnostic symptoms like 'high_distraction', 'low_focus')",
       "simulate_struggle": "Returns list of active/behavioral struggles that may modify avatar state, like 'focus_lost', 'task_abandoned', 'premature_action'"
     },
     "key_points": [

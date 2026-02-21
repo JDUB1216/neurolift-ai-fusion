@@ -246,9 +246,11 @@ class SessionOrchestrator:
                     # Retry after coaching
                     retry = self.avatar.attempt_task(scenario)
                     sr.total_attempts += 1
+                    retry = self.avatar.attempt_task(scenario)
+                    sr.total_attempts += 1
+                    self.aide.track_intervention_effectiveness(coaching, retry)  # Always track outcome
                     if retry.success:
                         sr.successes += 1
-                        self.aide.track_intervention_effectiveness(coaching, retry)
                         break
 
             # Return to idle between attempts

@@ -162,18 +162,18 @@ class BaseAide(ABC):
     STRESS_LEVEL_HIGH_THRESHOLD = 0.7
     STRESS_LEVEL_CRITICAL_THRESHOLD = 0.8
     STRESS_LEVEL_CRISIS_THRESHOLD = 0.9
-    
+
     COGNITIVE_LOAD_WARNING_THRESHOLD = 0.7
     COGNITIVE_LOAD_HIGH_THRESHOLD = 0.8
     COGNITIVE_LOAD_CRITICAL_THRESHOLD = 0.9
-    
+
     BURNOUT_RISK_ELEVATED_THRESHOLD = 0.5
     BURNOUT_RISK_HIGH_THRESHOLD = 0.7
     BURNOUT_RISK_CRITICAL_THRESHOLD = 0.8
-    
+
     INDEPENDENCE_LEVEL_LOW_THRESHOLD = 0.3
     INDEPENDENCE_LEVEL_BUILDING_THRESHOLD = 0.6
-    
+
     TASK_QUALITY_SUCCESS_THRESHOLD = 0.7
 
     def __init__(
@@ -541,14 +541,16 @@ class BaseAide(ABC):
         if obs.needs_intervention:
             return True
         # Also intervene if independence is low and Avatar just failed
-        if obs.independence_level < self.INDEPENDENCE_LEVEL_LOW_THRESHOLD and obs.recent_task_results:
+        if (obs.independence_level < self.INDEPENDENCE_LEVEL_LOW_THRESHOLD
+                and obs.recent_task_results):
             last = obs.recent_task_results[-1]
             if not last.get("success", True):
                 return True
         return False
 
     def _requires_crisis_intervention(self, obs: ObservationReport) -> bool:
-        return obs.burnout_risk > self.BURNOUT_RISK_CRITICAL_THRESHOLD or obs.stress_level > self.STRESS_LEVEL_CRISIS_THRESHOLD
+        return (obs.burnout_risk > self.BURNOUT_RISK_CRITICAL_THRESHOLD
+                or obs.stress_level > self.STRESS_LEVEL_CRISIS_THRESHOLD)
 
     def _determine_coaching_type(self, obs: ObservationReport) -> CoachingType:
         if obs.burnout_risk > self.BURNOUT_RISK_HIGH_THRESHOLD:
@@ -562,7 +564,8 @@ class BaseAide(ABC):
     def _assess_urgency(self, obs: ObservationReport) -> InterventionUrgency:
         if obs.burnout_risk > self.BURNOUT_RISK_CRITICAL_THRESHOLD:
             return InterventionUrgency.CRITICAL
-        if obs.stress_level > self.STRESS_LEVEL_CRITICAL_THRESHOLD or obs.cognitive_load > self.COGNITIVE_LOAD_CRITICAL_THRESHOLD:
+        if (obs.stress_level > self.STRESS_LEVEL_CRITICAL_THRESHOLD
+                or obs.cognitive_load > self.COGNITIVE_LOAD_CRITICAL_THRESHOLD):
             return InterventionUrgency.HIGH
         if obs.emotional_state in ("frustrated", "overwhelmed"):
             return InterventionUrgency.MEDIUM

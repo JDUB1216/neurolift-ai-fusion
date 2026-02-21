@@ -354,16 +354,11 @@ class BaseAdvocate(ABC):
             stress > self.CRITICAL_STRESS_THRESHOLD
             or cognitive_load > self.CRITICAL_LOAD_THRESHOLD
         ):
-        # At module or class level
-        CRITICAL_STRESS_THRESHOLD = 0.8
-        CRITICAL_LOAD_THRESHOLD = 0.9
-        HIGH_STRESS_THRESHOLD = 0.6
-        HIGH_LOAD_THRESHOLD = 0.7
-        MEDIUM_STRESS_THRESHOLD = 0.4
-
-        if stress > CRITICAL_STRESS_THRESHOLD or cognitive_load > CRITICAL_LOAD_THRESHOLD:
             level = "critical"
-        elif stress > self.HIGH_STRESS_THRESHOLD or cognitive_load > self.HIGH_LOAD_THRESHOLD:
+        elif (
+            stress > self.HIGH_STRESS_THRESHOLD
+            or cognitive_load > self.HIGH_LOAD_THRESHOLD
+        ):
             level = "high"
         elif stress > self.MEDIUM_STRESS_THRESHOLD:
             level = "medium"

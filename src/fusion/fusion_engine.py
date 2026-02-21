@@ -163,6 +163,8 @@ class FusionEngine:
                 f"Empathy level: {empathy_level.value}",
                 f"Fusion quality: {quality_score:.2f}",
             ],
+            avatar_experience_summary=experiential_knowledge,
+            aide_expertise_summary=aide_expertise,
         )
 
         if not validation['all_passed'] and not force:

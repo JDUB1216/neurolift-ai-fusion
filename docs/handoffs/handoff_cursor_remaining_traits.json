@@ -32,6 +32,7 @@
     "simulate_struggle(task_context) -> List[str] of struggle indicators"
   ],
   "notes": [
+    "Pattern file src/avatars/adhd_traits/attention_deficit.py exists in the repository as a reference implementation",
     "Each trait should have unique struggle patterns based on ADHD research",
     "Use the ExperienceMemory system (inherited from BaseAvatar) — don't bypass it",
     "New Avatar constructor should accept optional EventBus for shared event bus",

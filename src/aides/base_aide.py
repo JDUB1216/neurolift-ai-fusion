@@ -675,6 +675,11 @@ class BaseAide(ABC):
             rec.times_effective += 1
 
     def get_strategy_effectiveness_summary(self) -> Dict[str, Any]:
+        """
+        Return a summary of strategy effectiveness for fusion-related data extraction.
+        
+        Returns:
+            Dict mapping strategy names to their usage statistics and effectiveness scores.
         """Get a summary of strategy effectiveness metrics.
         
         Returns a dictionary mapping strategy names to their usage statistics

@@ -92,8 +92,8 @@
       "Use helper methods to organize trait-specific logic",
       "Base calculations on task_context (task type, duration, complexity, etc.)",
       "Make struggles authentic to the specific ADHD trait based on research",
-      "struggle_indicators (in get_adhd_trait_impact) are passive/diagnostic - observable state measurements like 'high_distraction_level' or 'low_engagement_detected'",
-      "simulate_struggle() returns active/behavioral - specific actions/events that happened like 'abandoned_task', 'interrupted_work', or 'acted_impulsively'"
+      "struggle_indicators (in get_adhd_trait_impact) are passive/diagnostic - observable state measurements like \"high_distraction_level\" or \"low_engagement_detected\"",
+      "simulate_struggle() returns active/behavioral - specific actions/events that happened like \"abandoned_task\", \"interrupted_work\", or \"acted_impulsively\""
     ],
     "reference_implementation": "src/avatars/adhd_traits/attention_deficit.py"
   },

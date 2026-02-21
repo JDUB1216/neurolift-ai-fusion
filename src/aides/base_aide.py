@@ -475,7 +475,7 @@ class BaseAide(ABC):
             "success_rate": self.successful_interventions / total,
             "crisis_interventions": self.crisis_interventions,
             "independence_achievements": self.independence_achievements,
-            "strategy_effectiveness": self._get_strategy_effectiveness_summary(),
+            "strategy_effectiveness": self.get_strategy_effectiveness_summary(),
             "last_intervention": self.last_intervention.isoformat(),
         }
 
@@ -674,7 +674,13 @@ class BaseAide(ABC):
         if effective:
             rec.times_effective += 1
 
-    def _get_strategy_effectiveness_summary(self) -> Dict[str, Any]:
+    def get_strategy_effectiveness_summary(self) -> Dict[str, Any]:
+        """Get a summary of strategy effectiveness metrics.
+        
+        Returns a dictionary mapping strategy names to their usage statistics
+        and effectiveness scores. This is useful for fusion readiness assessment
+        and understanding which coaching strategies work best.
+        """
         return {
             name: {
                 "times_used": rec.times_used,

@@ -257,6 +257,7 @@ class FusionEngine:
         expertise_areas = [aide.expertise_area]
 
         # Coaching strategies that proved effective
+        effective = aide.get_strategy_effectiveness_summary()
         # Prefer a public API on the Aide; fall back to legacy private method if needed.
         get_effectiveness = getattr(aide, "get_strategy_effectiveness_summary", None)
         if get_effectiveness is None:

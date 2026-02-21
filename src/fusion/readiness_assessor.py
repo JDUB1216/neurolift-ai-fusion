@@ -6,6 +6,7 @@ multiple dimensions.  Fusion is not a binary gate — it produces a
 multi-dimensional readiness profile that determines fusion quality.
 """
 
+import logging
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import Any, Dict, List, Optional
@@ -13,6 +14,8 @@ from datetime import datetime
 
 from ..avatars.base_avatar import BaseAvatar
 from ..aides.base_aide import BaseAide
+
+logger = logging.getLogger(__name__)
 
 
 class FusionDimension(Enum):
@@ -217,13 +220,20 @@ class ReadinessAssessor:
         effective = avatar.experience_memory.get_effective_strategies()
         
         # Prefer a public API on the Aide; fall back to legacy private method if needed.
-        get_effectiveness = getattr(aide, "get_strategy_effectiveness_summary", None)
-        if get_effectiveness is None:
-            legacy_get_effectiveness = getattr(aide, "_get_strategy_effectiveness_summary", None)
-            if legacy_get_effectiveness is not None:
-                get_effectiveness = legacy_get_effectiveness
+        get_effectiveness = (
+            getattr(aide, "get_strategy_effectiveness_summary", None)
+            or getattr(aide, "_get_strategy_effectiveness_summary", None)
+        )
         
-        aide_strategies = get_effectiveness() if get_effectiveness is not None else {}
+        if get_effectiveness is None:
+            logger.warning(
+                "Aide %s has no strategy effectiveness method (neither public nor private). "
+                "Defaulting to empty strategies.",
+                aide.__class__.__name__
+            )
+            aide_strategies = {}
+        else:
+            aide_strategies = get_effectiveness()
 
         # Overlap: strategies the Aide taught that the Avatar now uses independently
         internalised = set(effective.keys()) & set(aide_strategies.keys())

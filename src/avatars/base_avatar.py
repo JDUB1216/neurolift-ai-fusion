@@ -376,10 +376,14 @@ class BaseAvatar(ABC):
         # Check if any coaching was received after this task attempt started
         received_coaching_this_attempt = False
         if self._current_task_start_time and self.coaching_history:
-            for coaching in self.coaching_history:
+            # Iterate in reverse order for better performance (recent coaching is at the end)
+            for coaching in reversed(self.coaching_history):
                 coaching_time = coaching.get("timestamp", datetime.min)
                 if coaching_time >= self._current_task_start_time:
                     received_coaching_this_attempt = True
+                    break
+                # If we've gone back before the task started, no need to continue
+                if coaching_time < self._current_task_start_time:
                     break
         
         independent = (

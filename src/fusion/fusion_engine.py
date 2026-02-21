@@ -146,7 +146,21 @@ class FusionEngine:
         # 7. Validate
         validation = self._validate_fusion(capabilities, quality_score)
 
-        # 8. Build result
+        # 8. Check if validation passed
+        if not validation["all_passed"]:
+            report.failure_reason = (
+                f"Fusion validation failed. "
+                f"Failed checks: {[k for k, v in validation['checks'].items() if not v]}. "
+                f"Quality score: {quality_score:.2f}"
+            )
+            self._emit(SignalType.FUSION_FAILED, {
+                "reason": report.failure_reason,
+                "validation": validation,
+            })
+            self._fusion_history.append(report)
+            return report
+
+        # 9. Build result
         advocate_id = f"advocate_{avatar.trait_name}_{str(uuid.uuid4())[:8]}"
         fusion_result = FusionResult(
             fusion_id=report.fusion_id,

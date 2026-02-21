@@ -173,7 +173,7 @@ class ReadinessAssessor:
     def _assess_emotional_resilience(self, avatar: BaseAvatar) -> DimensionScore:
         """Has the Avatar built emotional coping capacity?"""
         # Look at emotional journey in experiences
-        records = list(avatar.experience_memory._records)
+        records = avatar.experience_memory.get_all_records()
         if not records:
             return DimensionScore(
                 dimension=FusionDimension.EMOTIONAL_RESILIENCE,

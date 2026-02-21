@@ -147,7 +147,7 @@ class FusionEngine:
         validation = self._validate_fusion(capabilities, quality_score)
 
         # 8. Check if validation passed
-        if not validation["all_passed"]:
+        if not validation["all_passed"] and not force:
             report.failure_reason = (
                 f"Fusion validation failed. "
                 f"Failed checks: {[k for k, v in validation['checks'].items() if not v]}. "
@@ -177,7 +177,14 @@ class FusionEngine:
                 f"Empathy level: {empathy_level.value}",
                 f"Fusion quality: {quality_score:.2f}",
             ],
+            avatar_experience_summary=experiential_knowledge,
+            aide_expertise_summary=aide_expertise,
         )
+
+        # If forced but validation failed, still produce the fusion_result
+        # but mark success based on actual validation outcome
+        if not validation['all_passed'] and force:
+            fusion_result.fusion_notes.append("WARNING: Validation overridden via force=True")
 
         report.fusion_result = fusion_result
         report.success = validation.get("all_passed", False)

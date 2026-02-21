@@ -177,7 +177,7 @@ class StateMachine:
         return set(self._transitions.get(self._current_state, set()))
 
     def reset(self, state: Optional[Enum] = None) -> None:
-        """Reset to initial or specified state without firing callbacks."""
+        """Reset state history and optionally set the current state without firing callbacks."""
         if state is not None:
             self._current_state = state
         self._history.clear()

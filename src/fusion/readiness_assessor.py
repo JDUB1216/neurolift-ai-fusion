@@ -82,16 +82,17 @@ class ReadinessAssessor:
     OVERALL_THRESHOLD = 0.65
     EXPERIENCE_VOLUME_TARGET = 50
     EXPERIENCE_VARIETY_TARGET = 3
-    EXPERIENTIAL_VOLUME_WEIGHT = 0.6
-    EXPERIENTIAL_VARIETY_WEIGHT = 0.4
+    EXPERIENCE_VOLUME_WEIGHT = 0.6
+    EXPERIENCE_VARIETY_WEIGHT = 0.4
     COACHING_CONFIDENCE_TARGET = 20
-    INDEPENDENCE_WEIGHT = 0.7
-    INDEPENDENT_TASK_WEIGHT = 0.3
-    EMOTIONAL_RECOVERY_WEIGHT = 0.6
-    STRESS_RESILIENCE_WEIGHT = 0.4
-    STRATEGY_DISCOVERY_BONUS = 0.05
-    MAX_BURNOUT_CRISIS_PENALTY = 0.3
-    BURNOUT_CRISIS_PENALTY_PER_EVENT = 0.05
+    INDEPENDENCE_LEVEL_WEIGHT = 0.7
+    INDEPENDENT_TASK_RATIO_WEIGHT = 0.3
+    NEGATIVE_EMOTIONAL_STATES = {"frustrated", "disappointed", "overwhelmed"}
+    RESILIENCE_RECOVERY_WEIGHT = 0.6
+    RESILIENCE_STRESS_WEIGHT = 0.4
+    INTERNALISATION_STRATEGY_BONUS = 0.05
+    CRISIS_INTERVENTION_PENALTY = 0.05
+    CRISIS_INTERVENTION_PENALTY_CAP = 0.3
 
     def assess(self, avatar: BaseAvatar, aide: BaseAide) -> FusionReadiness:
         """Run the full readiness assessment."""
@@ -133,8 +134,8 @@ class ReadinessAssessor:
         volume_score = min(1.0, total / self.EXPERIENCE_VOLUME_TARGET)
         variety_score = min(1.0, len(recurring) / self.EXPERIENCE_VARIETY_TARGET)
         score = (
-            volume_score * self.EXPERIENTIAL_VOLUME_WEIGHT
-            + variety_score * self.EXPERIENTIAL_VARIETY_WEIGHT
+            volume_score * self.EXPERIENCE_VOLUME_WEIGHT
+            + variety_score * self.EXPERIENCE_VARIETY_WEIGHT
         )
 
         evidence = [
@@ -175,8 +176,8 @@ class ReadinessAssessor:
         total_tasks = len(avatar.learning_progress) or 1
 
         score = (
-            independence * self.INDEPENDENCE_WEIGHT
-            + (independent_tasks / total_tasks) * self.INDEPENDENT_TASK_WEIGHT
+            independence * self.INDEPENDENCE_LEVEL_WEIGHT
+            + (independent_tasks / total_tasks) * self.INDEPENDENT_TASK_RATIO_WEIGHT
         )
 
         evidence = [
@@ -201,16 +202,15 @@ class ReadinessAssessor:
             )
 
         # Count recovery from negative states
-        negative_states = {"frustrated", "disappointed", "overwhelmed"}
         recoveries = 0
         negative_episodes = 0
         for i, r in enumerate(records):
-            if any(s in negative_states for s in r.emotional_journey):
+            if any(s in self.NEGATIVE_EMOTIONAL_STATES for s in r.emotional_journey):
                 negative_episodes += 1
                 # Check if next experience shows recovery
                 if i + 1 < len(records):
                     next_emotions = records[i + 1].emotional_journey
-                    if any(s not in negative_states for s in next_emotions):
+                    if any(s not in self.NEGATIVE_EMOTIONAL_STATES for s in next_emotions):
                         recoveries += 1
 
         recovery_rate = recoveries / max(negative_episodes, 1)
@@ -218,8 +218,8 @@ class ReadinessAssessor:
         resilience_bonus = max(0.0, 1.0 - current_stress)
 
         score = (
-            recovery_rate * self.EMOTIONAL_RECOVERY_WEIGHT
-            + resilience_bonus * self.STRESS_RESILIENCE_WEIGHT
+            recovery_rate * self.RESILIENCE_RECOVERY_WEIGHT
+            + resilience_bonus * self.RESILIENCE_STRESS_WEIGHT
         )
 
         evidence = [
@@ -244,7 +244,10 @@ class ReadinessAssessor:
         total_taught = len(aide_strategies) or 1
         internalisation_rate = len(internalised) / total_taught
 
-        score = min(1.0, internalisation_rate + len(effective) * self.STRATEGY_DISCOVERY_BONUS)
+        score = min(
+            1.0,
+            internalisation_rate + len(effective) * self.INTERNALISATION_STRATEGY_BONUS,
+        )
 
         evidence = [
             f"Strategies internalised: {len(internalised)}",
@@ -267,8 +270,8 @@ class ReadinessAssessor:
         # Low burnout risk + few crises = good management
         risk_score = 1.0 - burnout["risk_score"]
         crisis_penalty = min(
-            self.MAX_BURNOUT_CRISIS_PENALTY,
-            crisis_count * self.BURNOUT_CRISIS_PENALTY_PER_EVENT,
+            self.CRISIS_INTERVENTION_PENALTY_CAP,
+            crisis_count * self.CRISIS_INTERVENTION_PENALTY,
         )
         score = max(0.0, risk_score - crisis_penalty)
 

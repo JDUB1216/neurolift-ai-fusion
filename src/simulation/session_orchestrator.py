@@ -10,14 +10,13 @@ This is the "game loop" of the experiential learning system.
 
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from datetime import datetime
 import uuid
 
 from ..core.events import EventBus, Signal, SignalType
-from ..core.protocols import InteractionChannel
-from ..avatars.base_avatar import BaseAvatar, AvatarState, TaskResult
-from ..aides.base_aide import BaseAide, CoachingAction
+from ..avatars.base_avatar import BaseAvatar, TaskResult
+from ..aides.base_aide import BaseAide
 from ..fusion.readiness_assessor import ReadinessAssessor, FusionReadiness
 
 
@@ -211,9 +210,7 @@ class SessionOrchestrator:
         name = scenario.get("name", "unnamed")
         sr = ScenarioResult(scenario_name=name)
 
-        for _attempt_num in range(self.config.max_attempts_per_scenario):
-            if sr.total_attempts >= self.config.max_attempts_per_scenario:
-                break
+        while sr.total_attempts < self.config.max_attempts_per_scenario:
             # Check burnout abort
             burnout = self.avatar.assess_burnout_risk()
             sr.burnout_risk_peak = max(sr.burnout_risk_peak, burnout["risk_score"])
@@ -225,17 +222,13 @@ class SessionOrchestrator:
             # Attempt
             result = self.avatar.attempt_task(scenario)
             sr.total_attempts += 1
+            scenario_complete = False
 
             if result.success:
                 sr.successes += 1
 
                 # Check if we've hit target success rate
-                current_rate = sr.successes / sr.total_attempts
-                if (
-                    current_rate >= self.config.success_rate_target
-                    and sr.total_attempts >= self.config.min_attempts_for_success_check
-                ):
-                    break
+                scenario_complete = self._meets_success_target(sr)
             else:
                 # Aide coaching loop
                 coaching_count = 0
@@ -252,18 +245,31 @@ class SessionOrchestrator:
                     # Retry after coaching
                     retry = self.avatar.attempt_task(scenario)
                     sr.total_attempts += 1
+                    # Always track outcomes (including failed retries) so strategy
+                    # effectiveness reflects both wins and losses.
                     self.aide.track_intervention_effectiveness(coaching, retry)
                     if retry.success:
                         sr.successes += 1
+                        scenario_complete = self._meets_success_target(sr)
                         break
 
             # Return to idle between attempts
             self.avatar.return_to_idle()
+            if scenario_complete:
+                break
 
         sr.independence_level = self.avatar.get_independence_level(
             scenario.get("task_type", "unknown")
         )
         return sr
+
+    def _meets_success_target(self, scenario_result: ScenarioResult) -> bool:
+        """Check if scenario has met success criteria."""
+        current_rate = scenario_result.successes / max(scenario_result.total_attempts, 1)
+        return (
+            current_rate >= self.config.success_rate_target
+            and scenario_result.total_attempts >= self.config.min_attempts_for_success_check
+        )
 
     # ------------------------------------------------------------------
     # Event emission

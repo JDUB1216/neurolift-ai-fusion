@@ -78,6 +78,11 @@ class ObservationReport:
     LOAD_INTERVENTION_THRESHOLD: ClassVar[float] = 0.8
     BURNOUT_INTERVENTION_THRESHOLD: ClassVar[float] = 0.6
     STRUGGLE_COUNT_INTERVENTION_THRESHOLD: ClassVar[int] = 3
+    INTERVENTION_EMOTIONAL_STATES: ClassVar[tuple] = (
+        "frustrated",
+        "overwhelmed",
+        "defeated",
+    )
 
     avatar_id: str = ""
     current_state: str = ""
@@ -97,7 +102,7 @@ class ObservationReport:
             self.stress_level > self.STRESS_INTERVENTION_THRESHOLD
             or self.cognitive_load > self.LOAD_INTERVENTION_THRESHOLD
             or self.burnout_risk > self.BURNOUT_INTERVENTION_THRESHOLD
-            or self.emotional_state in ("frustrated", "overwhelmed", "defeated")
+            or self.emotional_state in self.INTERVENTION_EMOTIONAL_STATES
             or len(self.active_struggles) >= self.STRUGGLE_COUNT_INTERVENTION_THRESHOLD
         )
 
@@ -270,16 +275,12 @@ class ExperienceMemory:
         self._records.append(experience)
 
     def get_records(self, limit: Optional[int] = None) -> List[ExperienceRecord]:
-        """
-        Return recorded experiences in chronological order.
-
-        This preserves encapsulation for consumers that need broad history
-        access without reaching into private storage internals.
-        """
+        """Public accessor for stored experience records."""
         records = list(self._records)
         if limit is None:
             return records
         return records[-limit:]
+
 
     def recall_by_task(self, task_type: str, limit: int = 20) -> List[ExperienceRecord]:
         """Recall experiences for a specific task type."""

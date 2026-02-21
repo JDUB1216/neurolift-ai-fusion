@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from ..core.events import EventBus, Signal, SignalType
 from ..core.protocols import (
@@ -35,6 +35,16 @@ from ..core.protocols import (
     ObservationReport,
 )
 from ..avatars.base_avatar import BaseAvatar, AvatarState, TaskResult
+
+
+# ---------------------------------------------------------------------------
+# Tuning constants
+# ---------------------------------------------------------------------------
+
+INTERVENTION_ATTRIBUTION_WINDOW = timedelta(minutes=10)
+HIGH_STRESS_RISK_THRESHOLD = 0.7
+HIGH_COGNITIVE_LOAD_RISK_THRESHOLD = 0.8
+NEGATIVE_EMOTIONAL_STATES = ("frustrated", "overwhelmed")
 
 
 # ---------------------------------------------------------------------------
@@ -162,6 +172,14 @@ class BaseAide(ABC):
     HIGH_COGNITIVE_LOAD_THRESHOLD = 0.8
     EARLY_WARNING_BURNOUT_THRESHOLD = 0.5
     EARLY_WARNING_COGNITIVE_LOAD_THRESHOLD = 0.7
+    TASK_QUALITY_SUCCESS_THRESHOLD = 0.6
+    INDEPENDENCE_LEVEL_LOW_THRESHOLD = 0.3
+    BURNOUT_RISK_CRITICAL_THRESHOLD = 0.8
+    BURNOUT_RISK_HIGH_THRESHOLD = 0.6
+    STRESS_LEVEL_CRISIS_THRESHOLD = 0.9
+    STRESS_LEVEL_CRITICAL_THRESHOLD = 0.8
+    COGNITIVE_LOAD_CRITICAL_THRESHOLD = 0.9
+    INDEPENDENCE_LEVEL_BUILDING_THRESHOLD = 0.5
 
     def __init__(
         self,
@@ -184,6 +202,7 @@ class BaseAide(ABC):
 
         # Strategy effectiveness learning
         self._strategy_records: Dict[str, _StrategyRecord] = {}
+        self._pending_interventions: Dict[str, datetime] = {}
 
         # Coaching state
         self.intervention_history: List[CoachingAction] = []
@@ -304,48 +323,37 @@ class BaseAide(ABC):
         observation = self._avatar.get_observation_snapshot()
         self._deliver_crisis_coaching(observation)
 
-    def _on_avatar_task_completed(self, _signal: Signal) -> None:
-        """
-        Observe task completion events without attributing effectiveness.
-
-        Effectiveness attribution is done explicitly via
-        track_intervention_effectiveness() by the orchestrating caller so we
-        can avoid stale or duplicate crediting.
-        """
-        return
-
-        # If both the signal and the last action expose a task identifier,
-        # ensure they match; otherwise, avoid attributing effectiveness.
-        signal_task_id = data.get("task_id")
-        last_task_id = getattr(last_action, "task_id", None)
-        if signal_task_id is not None and last_task_id is not None:
-            if signal_task_id != last_task_id:
-                return
-
-        # Require a plausible temporal relationship between intervention
-        # and completion. If we can't establish timing, don't credit it.
-        last_timestamp = getattr(last_action, "timestamp", None)
-        if not isinstance(last_timestamp, datetime):
+    def _on_avatar_task_completed(self, signal: Signal) -> None:
+        """Track effectiveness when Avatar completes a task after coaching."""
+        if not self.intervention_history:
             return
 
-        completed_at = data.get("completed_at")
-        if isinstance(completed_at, datetime):
-            completion_time = completed_at
+        last_action = self.intervention_history[-1]
+        if last_action.action_id not in self._pending_interventions:
+            return
+
+        signal_data = getattr(signal, "data", {}) or {}
+        completed_raw = signal_data.get("timestamp")
+        if isinstance(completed_raw, datetime):
+            completion_time = completed_raw
+        elif isinstance(completed_raw, str):
+            try:
+                completion_time = datetime.fromisoformat(completed_raw)
+            except ValueError:
+                completion_time = datetime.now()
         else:
-            # Fallback to "now" if the event lacks a timestamp; this still
-            # enforces a recency check relative to the intervention.
-            completion_time = datetime.utcnow()
+            completion_time = datetime.now()
 
-        # Completion must not precede the intervention.
-        if completion_time < last_timestamp:
+        if completion_time < last_action.timestamp:
             return
 
-        # Only treat completions as related if they are within a bounded
-        # window of the intervention (i.e., the same task attempt).
-        if completion_time - last_timestamp > timedelta(minutes=10):
+        if completion_time - last_action.timestamp > INTERVENTION_ATTRIBUTION_WINDOW:
+            self._pending_interventions.pop(last_action.action_id, None)
             return
 
         self._record_strategy_outcome(last_action.strategy, effective=True)
+        self._pending_interventions.pop(last_action.action_id, None)
+
     def _on_avatar_independence(self, signal: Signal) -> None:
         """Celebrate and record independence milestones."""
         self.independence_achievements += 1
@@ -450,6 +458,7 @@ class BaseAide(ABC):
             self._record_failure_pattern(action, avatar_result)
 
         self._record_strategy_outcome(action.strategy, effective)
+        self._pending_interventions.pop(action.action_id, None)
 
     def get_coaching_effectiveness_metrics(self) -> Dict[str, Any]:
         total = max(self.total_interventions, 1)
@@ -505,6 +514,7 @@ class BaseAide(ABC):
         self.intervention_history.append(action)
         self.total_interventions += 1
         self.last_intervention = datetime.now()
+        self._pending_interventions[action.action_id] = action.timestamp
 
         self._emit(SignalType.AIDE_COACHING_DELIVERED, {
             "strategy": action.strategy,
@@ -533,6 +543,7 @@ class BaseAide(ABC):
         self.total_interventions += 1
         self.crisis_interventions += 1
         self.last_intervention = datetime.now()
+        self._pending_interventions[action.action_id] = action.timestamp
         return action
 
     def _build_crisis_action(self) -> CoachingAction:
@@ -665,17 +676,6 @@ class BaseAide(ABC):
             rec.times_effective += 1
 
     def get_strategy_effectiveness_summary(self) -> Dict[str, Any]:
-        """
-        Return a summary of strategy effectiveness for fusion-related data extraction.
-        
-        Returns:
-            Dict mapping strategy names to their usage statistics and effectiveness scores.
-        """Get a summary of strategy effectiveness metrics.
-        
-        Returns a dictionary mapping strategy names to their usage statistics
-        and effectiveness scores. This is useful for fusion readiness assessment
-        and understanding which coaching strategies work best.
-        """
         return {
             name: {
                 "times_used": rec.times_used,
@@ -684,17 +684,21 @@ class BaseAide(ABC):
             for name, rec in self._strategy_records.items()
         }
 
+    def _get_strategy_effectiveness_summary(self) -> Dict[str, Any]:
+        """Backward-compatible alias for existing callers."""
+        return self.get_strategy_effectiveness_summary()
+
     # ------------------------------------------------------------------
     # Private helpers — risk assessment
     # ------------------------------------------------------------------
 
     def _identify_risk_factors(self, avatar: BaseAvatar) -> List[str]:
         factors: List[str] = []
-        if avatar.stress_level > self.HIGH_STRESS_THRESHOLD:
+        if avatar.stress_level > HIGH_STRESS_RISK_THRESHOLD:
             factors.append("High stress level")
-        if avatar.cognitive_load > self.HIGH_COGNITIVE_LOAD_THRESHOLD:
+        if avatar.cognitive_load > HIGH_COGNITIVE_LOAD_RISK_THRESHOLD:
             factors.append("High cognitive load")
-        if avatar.emotional_state in ("frustrated", "overwhelmed"):
+        if avatar.emotional_state in NEGATIVE_EMOTIONAL_STATES:
             factors.append("Negative emotional state")
         return factors
 
@@ -710,11 +714,11 @@ class BaseAide(ABC):
 
     def _generate_intervention_recommendations(self, avatar: BaseAvatar) -> List[str]:
         recs: List[str] = []
-        if avatar.stress_level > self.HIGH_STRESS_THRESHOLD:
+        if avatar.stress_level > HIGH_STRESS_RISK_THRESHOLD:
             recs.append("Implement stress reduction techniques")
-        if avatar.cognitive_load > self.HIGH_COGNITIVE_LOAD_THRESHOLD:
+        if avatar.cognitive_load > HIGH_COGNITIVE_LOAD_RISK_THRESHOLD:
             recs.append("Reduce task complexity")
-        if avatar.emotional_state in ("frustrated", "overwhelmed"):
+        if avatar.emotional_state in NEGATIVE_EMOTIONAL_STATES:
             recs.append("Provide emotional support and validation")
         return recs
 

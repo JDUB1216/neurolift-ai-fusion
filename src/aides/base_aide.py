@@ -301,10 +301,47 @@ class BaseAide(ABC):
 
     def _on_avatar_task_completed(self, signal: Signal) -> None:
         """Track effectiveness when Avatar completes a task after coaching."""
-        if self.intervention_history:
-            last_action = self.intervention_history[-1]
-            self._record_strategy_outcome(last_action.strategy, effective=True)
+        if not self.intervention_history:
+            return
 
+        last_action = self.intervention_history[-1]
+
+        # Be conservative: only credit the last intervention if we have
+        # evidence that it relates to this task attempt and is recent.
+        data = getattr(signal, "data", None) or {}
+
+        # If both the signal and the last action expose a task identifier,
+        # ensure they match; otherwise, avoid attributing effectiveness.
+        signal_task_id = data.get("task_id")
+        last_task_id = getattr(last_action, "task_id", None)
+        if signal_task_id is not None and last_task_id is not None:
+            if signal_task_id != last_task_id:
+                return
+
+        # Require a plausible temporal relationship between intervention
+        # and completion. If we can't establish timing, don't credit it.
+        last_timestamp = getattr(last_action, "timestamp", None)
+        if not isinstance(last_timestamp, datetime):
+            return
+
+        completed_at = data.get("completed_at")
+        if isinstance(completed_at, datetime):
+            completion_time = completed_at
+        else:
+            # Fallback to "now" if the event lacks a timestamp; this still
+            # enforces a recency check relative to the intervention.
+            completion_time = datetime.utcnow()
+
+        # Completion must not precede the intervention.
+        if completion_time < last_timestamp:
+            return
+
+        # Only treat completions as related if they are within a bounded
+        # window of the intervention (i.e., the same task attempt).
+        if completion_time - last_timestamp > timedelta(minutes=10):
+            return
+
+        self._record_strategy_outcome(last_action.strategy, effective=True)
     def _on_avatar_independence(self, signal: Signal) -> None:
         """Celebrate and record independence milestones."""
         self.independence_achievements += 1

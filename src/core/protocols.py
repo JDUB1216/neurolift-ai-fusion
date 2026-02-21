@@ -318,6 +318,10 @@ class ExperienceMemory:
             trajectory.append(min(1.0, max(0.0, cumulative)))
         return trajectory
 
+    def __iter__(self):
+        """Make ExperienceMemory iterable to access records without breaking encapsulation."""
+        return iter(self._records)
+
     @property
     def total_experiences(self) -> int:
         return len(self._records)

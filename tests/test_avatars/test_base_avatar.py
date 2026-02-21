@@ -82,12 +82,17 @@ class TestBaseAvatar:
         avatar = TestAvatar("a1", {"trait_name": "t"})
         # Force into a state that can receive coaching
         avatar.current_state = AvatarState.STRUGGLING
+        avatar.stress_level = 0.5
 
         coaching = {"strategy": "test", "stress_reduction": 0.3, "emotional_boost": 0.2}
+        initial_stress = avatar.stress_level
         avatar.receive_coaching(coaching)
 
         assert avatar.current_state == AvatarState.APPLYING_STRATEGY
         assert avatar.total_coaching_sessions == 1
+        # Verify stress was reduced by coaching effects
+        assert avatar.stress_level <= initial_stress
+        assert avatar.stress_level < initial_stress
         assert len(avatar.coaching_history) == 1
         assert avatar.coaching_history[0]["avatar_state_before"] == AvatarState.STRUGGLING.value
 

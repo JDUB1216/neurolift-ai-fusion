@@ -14,6 +14,8 @@ from .base_advocate import (
     FusionResult,
     SupportResponse,
 )
+# Fusion engine module not yet implemented
+# from .fusion_engine import FusionEngine, FusionReadiness, FusionCriteria
 
 __all__ = [
     "BaseAdvocate",
@@ -22,4 +24,5 @@ __all__ = [
     "EmpathyLevel",
     "FusionResult",
     "SupportResponse",
+    # Additional exports will be added as modules are implemented
 ]

@@ -257,6 +257,7 @@ class BaseAvatar(ABC):
         self.learning_progress: Dict[str, LearningProgress] = {}
         self.struggle_patterns: List[Dict[str, Any]] = []
         self.coaching_history: List[Dict[str, Any]] = []
+        self._current_task_start_time: Optional[datetime] = None
 
         # Recent task results ring buffer (for burnout assessment)
         self._recent_results: List[TaskResult] = []
@@ -338,6 +339,9 @@ class BaseAvatar(ABC):
         self._transition(AvatarState.ATTEMPTING_TASK, "task_start")
         self.last_activity = attempt_started_at
         self.total_tasks_attempted += 1
+        
+        # Track when this task attempt started for coaching detection
+        self._current_task_start_time = datetime.now()
 
         # Emit task-start signal
         self._emit(SignalType.AVATAR_TASK_STARTED, {

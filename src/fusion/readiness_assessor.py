@@ -6,6 +6,7 @@ multiple dimensions.  Fusion is not a binary gate — it produces a
 multi-dimensional readiness profile that determines fusion quality.
 """
 
+import logging
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import Any, Dict, List, Optional
@@ -13,6 +14,8 @@ from datetime import datetime
 
 from ..avatars.base_avatar import BaseAvatar
 from ..aides.base_aide import BaseAide
+
+logger = logging.getLogger(__name__)
 
 
 class FusionDimension(Enum):

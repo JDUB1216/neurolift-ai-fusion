@@ -383,13 +383,7 @@ class BaseAvatar(ABC):
         self._update_cognitive_load(task_context, trait_impact)
 
         # Determine if attempt was independent (no coaching this attempt)
-        no_recent_coaching = len(self.coaching_history) == 0 or (
-            self.coaching_history
-            and (datetime.now() - self.coaching_history[-1].get(
-                "timestamp", datetime.now()
-            )).total_seconds() > INDEPENDENCE_COACHING_LOOKBACK_SECONDS
-        )
-        independent = (not received_coaching_this_attempt) and no_recent_coaching
+        independent = not received_coaching_this_attempt
 
         result = TaskResult(
             success=success,

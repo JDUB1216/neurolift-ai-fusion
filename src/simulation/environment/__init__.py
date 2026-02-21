@@ -1,9 +1,4 @@
-"""
-Simulation Environment Core
-
-Core simulation environment components including world engine, time system,
-and consequence management.
-"""
+"""Simulation Environment Core"""
 
 from .world_engine import WorldEngine, SimulationState, Event
 # Time system and consequence system modules not yet implemented

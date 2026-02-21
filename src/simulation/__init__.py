@@ -1,18 +1,11 @@
 """
 Simulation Environment
 
-The simulation environment creates realistic scenarios where Avatars experience
-authentic ADHD struggles while Aides provide real-time coaching. The environment
-includes world physics, time systems, consequences, NPCs, and scenario management.
-
-Key Components:
-- Environment: Core simulation engine and world management
-- Scenarios: Library of workplace, personal, and social scenarios
-- NPCs: Non-player characters for social dynamics and comparison
-- Challenges: Dynamic difficulty and random dysfunction injection
-- Training Loop: Core training logic and session management
+Creates realistic scenarios where Avatars experience authentic ADHD
+struggles while Aides provide real-time coaching.
 """
 
+from .session_orchestrator import SessionOrchestrator, SessionConfig, SessionResult
 from .environment import (
     WorldEngine,
     SimulationState,
@@ -52,6 +45,9 @@ class SimulationEnvironment(WorldEngine):
 # )
 
 __all__ = [
+    "SessionOrchestrator",
+    "SessionConfig",
+    "SessionResult",
     "SimulationEnvironment",
     "WorldEngine",
     "SimulationState",

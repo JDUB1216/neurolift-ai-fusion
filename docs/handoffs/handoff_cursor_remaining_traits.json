@@ -49,6 +49,7 @@
     "Each trait should have unique struggle patterns based on ADHD research",
     "Use the ExperienceMemory system (inherited from BaseAvatar) — don't bypass it",
     "New Avatar constructor should accept optional EventBus for shared event bus",
+    "Update attention_deficit.py constructor to also accept event_bus kwarg",
     "See implementation_pattern above for complete example code"
   ]
 }

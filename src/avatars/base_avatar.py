@@ -424,13 +424,14 @@ class BaseAvatar(ABC):
         Transitions through RECEIVING_COACHING -> APPLYING_STRATEGY,
         then returns to ATTEMPTING_TASK (ready for retry).
         """
+        avatar_state_before = self.current_state.value
         self._transition(AvatarState.RECEIVING_COACHING, "coaching_received")
         self.total_coaching_sessions += 1
 
         self.coaching_history.append({
             "timestamp": datetime.now(),
             "coaching_action": coaching_action,
-            "avatar_state_before": self.current_state.value,
+            "avatar_state_before": avatar_state_before,
             "emotional_state": self.emotional_state,
             "cognitive_load": self.cognitive_load,
         })

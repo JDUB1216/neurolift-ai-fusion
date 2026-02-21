@@ -386,6 +386,10 @@ class BaseAvatar(ABC):
                 if coaching_time < self._current_task_start_time:
                     break
         
+        # Determine if attempt was independent (no coaching this attempt)
+        received_coaching_this_attempt = task_context.get(
+            "received_coaching_this_attempt", False
+        )
         independent = (
             not received_coaching_this_attempt
             and (

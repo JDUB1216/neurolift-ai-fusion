@@ -158,6 +158,24 @@ class BaseAide(ABC):
     foundation for crisis response.
     """
 
+    # Risk assessment thresholds
+    STRESS_LEVEL_HIGH_THRESHOLD = 0.7
+    STRESS_LEVEL_CRITICAL_THRESHOLD = 0.8
+    STRESS_LEVEL_CRISIS_THRESHOLD = 0.9
+
+    COGNITIVE_LOAD_WARNING_THRESHOLD = 0.7
+    COGNITIVE_LOAD_HIGH_THRESHOLD = 0.8
+    COGNITIVE_LOAD_CRITICAL_THRESHOLD = 0.9
+
+    BURNOUT_RISK_ELEVATED_THRESHOLD = 0.5
+    BURNOUT_RISK_HIGH_THRESHOLD = 0.7
+    BURNOUT_RISK_CRITICAL_THRESHOLD = 0.8
+
+    INDEPENDENCE_LEVEL_LOW_THRESHOLD = 0.3
+    INDEPENDENCE_LEVEL_BUILDING_THRESHOLD = 0.6
+
+    TASK_QUALITY_SUCCESS_THRESHOLD = 0.7
+
     def __init__(
         self,
         aide_id: str,
@@ -433,7 +451,7 @@ class BaseAide(ABC):
         """Track whether a coaching intervention was effective."""
         success_indicators = [
             avatar_result.success,
-            avatar_result.quality_score > 0.7,
+            avatar_result.quality_score > self.TASK_QUALITY_SUCCESS_THRESHOLD,
             len(avatar_result.struggle_indicators) < len(action.specific_techniques),
             avatar_result.emotional_state in ("confident", "relieved", "hopeful"),
         ]
@@ -560,28 +578,31 @@ class BaseAide(ABC):
         if obs.needs_intervention:
             return True
         # Also intervene if independence is low and Avatar just failed
-        if obs.independence_level < 0.3 and obs.recent_task_results:
+        if (obs.independence_level < self.INDEPENDENCE_LEVEL_LOW_THRESHOLD
+                and obs.recent_task_results):
             last = obs.recent_task_results[-1]
             if not last.get("success", True):
                 return True
         return False
 
     def _requires_crisis_intervention(self, obs: ObservationReport) -> bool:
-        return obs.burnout_risk > 0.8 or obs.stress_level > 0.9
+        return (obs.burnout_risk > self.BURNOUT_RISK_CRITICAL_THRESHOLD
+                or obs.stress_level > self.STRESS_LEVEL_CRISIS_THRESHOLD)
 
     def _determine_coaching_type(self, obs: ObservationReport) -> CoachingType:
-        if obs.burnout_risk > 0.7:
+        if obs.burnout_risk > self.BURNOUT_RISK_HIGH_THRESHOLD:
             return CoachingType.CRISIS
         if obs.current_state == AvatarState.STRUGGLING.value:
             return CoachingType.REACTIVE
-        if obs.independence_level > 0.6:
+        if obs.independence_level > self.INDEPENDENCE_LEVEL_BUILDING_THRESHOLD:
             return CoachingType.INDEPENDENCE_BUILDING
         return CoachingType.PREVENTIVE
 
     def _assess_urgency(self, obs: ObservationReport) -> InterventionUrgency:
-        if obs.burnout_risk > 0.8:
+        if obs.burnout_risk > self.BURNOUT_RISK_CRITICAL_THRESHOLD:
             return InterventionUrgency.CRITICAL
-        if obs.stress_level > 0.8 or obs.cognitive_load > 0.9:
+        if (obs.stress_level > self.STRESS_LEVEL_CRITICAL_THRESHOLD
+                or obs.cognitive_load > self.COGNITIVE_LOAD_CRITICAL_THRESHOLD):
             return InterventionUrgency.HIGH
         if obs.emotional_state in ("frustrated", "overwhelmed"):
             return InterventionUrgency.MEDIUM
@@ -659,6 +680,11 @@ class BaseAide(ABC):
         
         Returns:
             Dict mapping strategy names to their usage statistics and effectiveness scores.
+        """Get a summary of strategy effectiveness metrics.
+        
+        Returns a dictionary mapping strategy names to their usage statistics
+        and effectiveness scores. This is useful for fusion readiness assessment
+        and understanding which coaching strategies work best.
         """
         return {
             name: {
@@ -674,9 +700,9 @@ class BaseAide(ABC):
 
     def _identify_risk_factors(self, avatar: BaseAvatar) -> List[str]:
         factors: List[str] = []
-        if avatar.stress_level > 0.7:
+        if avatar.stress_level > self.STRESS_LEVEL_HIGH_THRESHOLD:
             factors.append("High stress level")
-        if avatar.cognitive_load > 0.8:
+        if avatar.cognitive_load > self.COGNITIVE_LOAD_HIGH_THRESHOLD:
             factors.append("High cognitive load")
         if avatar.emotional_state in ("frustrated", "overwhelmed"):
             factors.append("Negative emotional state")
@@ -684,19 +710,19 @@ class BaseAide(ABC):
 
     def _detect_early_warning_signs(self, avatar: BaseAvatar) -> List[str]:
         signs: List[str] = []
-        if avatar.burnout_risk_level > 0.5:
+        if avatar.burnout_risk_level > self.BURNOUT_RISK_ELEVATED_THRESHOLD:
             signs.append("Elevated burnout risk score")
         if avatar.emotional_state == "frustrated":
             signs.append("Increased frustration")
-        if avatar.cognitive_load > 0.7:
+        if avatar.cognitive_load > self.COGNITIVE_LOAD_WARNING_THRESHOLD:
             signs.append("High cognitive load")
         return signs
 
     def _generate_intervention_recommendations(self, avatar: BaseAvatar) -> List[str]:
         recs: List[str] = []
-        if avatar.stress_level > 0.7:
+        if avatar.stress_level > self.STRESS_LEVEL_HIGH_THRESHOLD:
             recs.append("Implement stress reduction techniques")
-        if avatar.cognitive_load > 0.8:
+        if avatar.cognitive_load > self.COGNITIVE_LOAD_HIGH_THRESHOLD:
             recs.append("Reduce task complexity")
         if avatar.emotional_state in ("frustrated", "overwhelmed"):
             recs.append("Provide emotional support and validation")

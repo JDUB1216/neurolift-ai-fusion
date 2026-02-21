@@ -319,7 +319,12 @@ class ExperienceMemory:
         return trajectory
 
     def __iter__(self):
-        """Make ExperienceMemory iterable to access records without breaking encapsulation."""
+        """
+        Iterate over experience records.
+        
+        Yields:
+            ExperienceRecord: Individual experience records from the memory.
+        """
         return iter(self._records)
 
     @property

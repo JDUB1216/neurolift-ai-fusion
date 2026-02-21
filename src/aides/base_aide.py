@@ -158,6 +158,24 @@ class BaseAide(ABC):
     foundation for crisis response.
     """
 
+    # Risk assessment thresholds
+    STRESS_LEVEL_HIGH_THRESHOLD = 0.7
+    STRESS_LEVEL_CRITICAL_THRESHOLD = 0.8
+    STRESS_LEVEL_CRISIS_THRESHOLD = 0.9
+
+    COGNITIVE_LOAD_WARNING_THRESHOLD = 0.7
+    COGNITIVE_LOAD_HIGH_THRESHOLD = 0.8
+    COGNITIVE_LOAD_CRITICAL_THRESHOLD = 0.9
+
+    BURNOUT_RISK_ELEVATED_THRESHOLD = 0.5
+    BURNOUT_RISK_HIGH_THRESHOLD = 0.7
+    BURNOUT_RISK_CRITICAL_THRESHOLD = 0.8
+
+    INDEPENDENCE_LEVEL_LOW_THRESHOLD = 0.3
+    INDEPENDENCE_LEVEL_BUILDING_THRESHOLD = 0.6
+
+    TASK_QUALITY_SUCCESS_THRESHOLD = 0.7
+
     def __init__(
         self,
         aide_id: str,
@@ -301,10 +319,47 @@ class BaseAide(ABC):
 
     def _on_avatar_task_completed(self, signal: Signal) -> None:
         """Track effectiveness when Avatar completes a task after coaching."""
-        if self.intervention_history:
-            last_action = self.intervention_history[-1]
-            self._record_strategy_outcome(last_action.strategy, effective=True)
+        if not self.intervention_history:
+            return
 
+        last_action = self.intervention_history[-1]
+
+        # Be conservative: only credit the last intervention if we have
+        # evidence that it relates to this task attempt and is recent.
+        data = getattr(signal, "data", None) or {}
+
+        # If both the signal and the last action expose a task identifier,
+        # ensure they match; otherwise, avoid attributing effectiveness.
+        signal_task_id = data.get("task_id")
+        last_task_id = getattr(last_action, "task_id", None)
+        if signal_task_id is not None and last_task_id is not None:
+            if signal_task_id != last_task_id:
+                return
+
+        # Require a plausible temporal relationship between intervention
+        # and completion. If we can't establish timing, don't credit it.
+        last_timestamp = getattr(last_action, "timestamp", None)
+        if not isinstance(last_timestamp, datetime):
+            return
+
+        completed_at = data.get("completed_at")
+        if isinstance(completed_at, datetime):
+            completion_time = completed_at
+        else:
+            # Fallback to "now" if the event lacks a timestamp; this still
+            # enforces a recency check relative to the intervention.
+            completion_time = datetime.utcnow()
+
+        # Completion must not precede the intervention.
+        if completion_time < last_timestamp:
+            return
+
+        # Only treat completions as related if they are within a bounded
+        # window of the intervention (i.e., the same task attempt).
+        if completion_time - last_timestamp > timedelta(minutes=10):
+            return
+
+        self._record_strategy_outcome(last_action.strategy, effective=True)
     def _on_avatar_independence(self, signal: Signal) -> None:
         """Celebrate and record independence milestones."""
         self.independence_achievements += 1
@@ -396,7 +451,7 @@ class BaseAide(ABC):
         """Track whether a coaching intervention was effective."""
         success_indicators = [
             avatar_result.success,
-            avatar_result.quality_score > 0.7,
+            avatar_result.quality_score > self.TASK_QUALITY_SUCCESS_THRESHOLD,
             len(avatar_result.struggle_indicators) < len(action.specific_techniques),
             avatar_result.emotional_state in ("confident", "relieved", "hopeful"),
         ]
@@ -523,28 +578,31 @@ class BaseAide(ABC):
         if obs.needs_intervention:
             return True
         # Also intervene if independence is low and Avatar just failed
-        if obs.independence_level < 0.3 and obs.recent_task_results:
+        if (obs.independence_level < self.INDEPENDENCE_LEVEL_LOW_THRESHOLD
+                and obs.recent_task_results):
             last = obs.recent_task_results[-1]
             if not last.get("success", True):
                 return True
         return False
 
     def _requires_crisis_intervention(self, obs: ObservationReport) -> bool:
-        return obs.burnout_risk > 0.8 or obs.stress_level > 0.9
+        return (obs.burnout_risk > self.BURNOUT_RISK_CRITICAL_THRESHOLD
+                or obs.stress_level > self.STRESS_LEVEL_CRISIS_THRESHOLD)
 
     def _determine_coaching_type(self, obs: ObservationReport) -> CoachingType:
-        if obs.burnout_risk > 0.7:
+        if obs.burnout_risk > self.BURNOUT_RISK_HIGH_THRESHOLD:
             return CoachingType.CRISIS
         if obs.current_state == AvatarState.STRUGGLING.value:
             return CoachingType.REACTIVE
-        if obs.independence_level > 0.6:
+        if obs.independence_level > self.INDEPENDENCE_LEVEL_BUILDING_THRESHOLD:
             return CoachingType.INDEPENDENCE_BUILDING
         return CoachingType.PREVENTIVE
 
     def _assess_urgency(self, obs: ObservationReport) -> InterventionUrgency:
-        if obs.burnout_risk > 0.8:
+        if obs.burnout_risk > self.BURNOUT_RISK_CRITICAL_THRESHOLD:
             return InterventionUrgency.CRITICAL
-        if obs.stress_level > 0.8 or obs.cognitive_load > 0.9:
+        if (obs.stress_level > self.STRESS_LEVEL_CRITICAL_THRESHOLD
+                or obs.cognitive_load > self.COGNITIVE_LOAD_CRITICAL_THRESHOLD):
             return InterventionUrgency.HIGH
         if obs.emotional_state in ("frustrated", "overwhelmed"):
             return InterventionUrgency.MEDIUM
@@ -637,9 +695,9 @@ class BaseAide(ABC):
 
     def _identify_risk_factors(self, avatar: BaseAvatar) -> List[str]:
         factors: List[str] = []
-        if avatar.stress_level > 0.7:
+        if avatar.stress_level > self.STRESS_LEVEL_HIGH_THRESHOLD:
             factors.append("High stress level")
-        if avatar.cognitive_load > 0.8:
+        if avatar.cognitive_load > self.COGNITIVE_LOAD_HIGH_THRESHOLD:
             factors.append("High cognitive load")
         if avatar.emotional_state in ("frustrated", "overwhelmed"):
             factors.append("Negative emotional state")
@@ -647,19 +705,19 @@ class BaseAide(ABC):
 
     def _detect_early_warning_signs(self, avatar: BaseAvatar) -> List[str]:
         signs: List[str] = []
-        if avatar.burnout_risk_level > 0.5:
+        if avatar.burnout_risk_level > self.BURNOUT_RISK_ELEVATED_THRESHOLD:
             signs.append("Elevated burnout risk score")
         if avatar.emotional_state == "frustrated":
             signs.append("Increased frustration")
-        if avatar.cognitive_load > 0.7:
+        if avatar.cognitive_load > self.COGNITIVE_LOAD_WARNING_THRESHOLD:
             signs.append("High cognitive load")
         return signs
 
     def _generate_intervention_recommendations(self, avatar: BaseAvatar) -> List[str]:
         recs: List[str] = []
-        if avatar.stress_level > 0.7:
+        if avatar.stress_level > self.STRESS_LEVEL_HIGH_THRESHOLD:
             recs.append("Implement stress reduction techniques")
-        if avatar.cognitive_load > 0.8:
+        if avatar.cognitive_load > self.COGNITIVE_LOAD_HIGH_THRESHOLD:
             recs.append("Reduce task complexity")
         if avatar.emotional_state in ("frustrated", "overwhelmed"):
             recs.append("Provide emotional support and validation")

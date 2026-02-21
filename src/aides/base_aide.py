@@ -648,10 +648,6 @@ class BaseAide(ABC):
         """
         Return a summary of strategy effectiveness for fusion-related data extraction.
         
-        Returns:
-            Dict mapping strategy names to their usage statistics and effectiveness scores.
-        """Get a summary of strategy effectiveness metrics.
-        
         Returns a dictionary mapping strategy names to their usage statistics
         and effectiveness scores. This is useful for fusion readiness assessment
         and understanding which coaching strategies work best.

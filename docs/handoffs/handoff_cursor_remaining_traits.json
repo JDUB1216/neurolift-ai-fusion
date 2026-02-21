@@ -95,14 +95,12 @@
       "struggle_indicators (in get_adhd_trait_impact) are passive/diagnostic - observable state measurements like \"high_distraction_level\" or \"low_engagement_detected\"",
       "simulate_struggle() returns active/behavioral - specific actions/events that happened like \"abandoned_task\", \"interrupted_work\", or \"acted_impulsively\""
     ],
-    "reference_implementation": "src/avatars/adhd_traits/attention_deficit.py"
+    "reference_implementation": "See implementation_pattern above for complete example code"
   },
   "notes": [
-    "Pattern file src/avatars/adhd_traits/attention_deficit.py exists in the repository as a reference implementation",
     "Each trait should have unique struggle patterns based on ADHD research",
     "Use the ExperienceMemory system (inherited from BaseAvatar) — don't bypass it",
     "New Avatar constructor should accept optional EventBus for shared event bus",
-    "Update attention_deficit.py constructor to also accept event_bus kwarg",
     "See implementation_pattern above for complete example code"
   ]
 }

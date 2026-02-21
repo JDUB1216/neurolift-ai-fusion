@@ -89,6 +89,7 @@ class TestBaseAvatar:
         assert avatar.current_state == AvatarState.APPLYING_STRATEGY
         assert avatar.total_coaching_sessions == 1
         assert len(avatar.coaching_history) == 1
+        assert avatar.coaching_history[0]["avatar_state_before"] == AvatarState.STRUGGLING.value
 
     def test_learning_progress_tracking(self):
         avatar = TestAvatar("a1", {"trait_name": "t"})

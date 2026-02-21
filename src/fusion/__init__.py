@@ -6,7 +6,12 @@ with an Aide's expertise to produce a fused Advocate.
 """
 
 from .fusion_engine import FusionEngine
-from .readiness_assessor import ReadinessAssessor, DimensionScore, FusionDimension, FusionReadiness
+from .readiness_assessor import (
+    ReadinessAssessor,
+    DimensionScore,
+    FusionDimension,
+    FusionReadiness,
+)
 
 __all__ = [
     "FusionEngine",

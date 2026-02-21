@@ -140,6 +140,12 @@ class BaseAdvocate(ABC):
     eventually faces real users.
     """
 
+    CRITICAL_STRESS_THRESHOLD = 0.8
+    CRITICAL_LOAD_THRESHOLD = 0.9
+    HIGH_STRESS_THRESHOLD = 0.6
+    HIGH_LOAD_THRESHOLD = 0.7
+    MEDIUM_STRESS_THRESHOLD = 0.4
+
     def __init__(
         self,
         advocate_id: str,
@@ -344,6 +350,10 @@ class BaseAdvocate(ABC):
         stress = user_context.get("stress_level", 0.5)
         cognitive_load = user_context.get("cognitive_load", 0.5)
 
+        if (
+            stress > self.CRITICAL_STRESS_THRESHOLD
+            or cognitive_load > self.CRITICAL_LOAD_THRESHOLD
+        ):
         # At module or class level
         CRITICAL_STRESS_THRESHOLD = 0.8
         CRITICAL_LOAD_THRESHOLD = 0.9
@@ -353,9 +363,9 @@ class BaseAdvocate(ABC):
 
         if stress > CRITICAL_STRESS_THRESHOLD or cognitive_load > CRITICAL_LOAD_THRESHOLD:
             level = "critical"
-        elif stress > HIGH_STRESS_THRESHOLD or cognitive_load > HIGH_LOAD_THRESHOLD:
+        elif stress > self.HIGH_STRESS_THRESHOLD or cognitive_load > self.HIGH_LOAD_THRESHOLD:
             level = "high"
-        elif stress > MEDIUM_STRESS_THRESHOLD:
+        elif stress > self.MEDIUM_STRESS_THRESHOLD:
             level = "medium"
         else:
             level = "low"

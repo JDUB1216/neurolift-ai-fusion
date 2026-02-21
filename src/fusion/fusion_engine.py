@@ -179,14 +179,27 @@ class FusionEngine:
             ],
         )
 
-        report.success = True
         report.fusion_result = fusion_result
+        report.success = validation.get("all_passed", False)
 
-        self._emit(SignalType.FUSION_COMPLETED, {
-            "advocate_id": advocate_id,
-            "quality_score": quality_score,
-            "empathy_level": empathy_level.value,
-        })
+        if report.success:
+            self._emit(SignalType.FUSION_COMPLETED, {
+                "advocate_id": advocate_id,
+                "quality_score": quality_score,
+                "empathy_level": empathy_level.value,
+            })
+        else:
+            failed_checks = [
+                check for check, passed in validation.get("checks", {}).items() if not passed
+            ]
+            report.failure_reason = (
+                "Fusion validation failed: "
+                + ", ".join(failed_checks)
+            )
+            self._emit(SignalType.FUSION_FAILED, {
+                "reason": report.failure_reason,
+                "validation": validation,
+            })
 
         self._fusion_history.append(report)
         return report
@@ -258,14 +271,6 @@ class FusionEngine:
 
         # Coaching strategies that proved effective
         effective = aide.get_strategy_effectiveness_summary()
-        # Prefer a public API on the Aide; fall back to legacy private method if needed.
-        get_effectiveness = getattr(aide, "get_strategy_effectiveness_summary", None)
-        if get_effectiveness is None:
-            legacy_get_effectiveness = getattr(aide, "_get_strategy_effectiveness_summary", None)
-            if legacy_get_effectiveness is not None:
-                get_effectiveness = legacy_get_effectiveness
-
-        effective = get_effectiveness() if get_effectiveness is not None else {}
         strategies = [
             name for name, info in effective.items()
             if info.get("effectiveness", 0) > 0.5

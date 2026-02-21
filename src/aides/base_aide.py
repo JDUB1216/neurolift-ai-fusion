@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from ..core.events import EventBus, Signal, SignalType
 from ..core.protocols import (
@@ -158,23 +158,10 @@ class BaseAide(ABC):
     foundation for crisis response.
     """
 
-    # Risk assessment thresholds
-    STRESS_LEVEL_HIGH_THRESHOLD = 0.7
-    STRESS_LEVEL_CRITICAL_THRESHOLD = 0.8
-    STRESS_LEVEL_CRISIS_THRESHOLD = 0.9
-
-    COGNITIVE_LOAD_WARNING_THRESHOLD = 0.7
-    COGNITIVE_LOAD_HIGH_THRESHOLD = 0.8
-    COGNITIVE_LOAD_CRITICAL_THRESHOLD = 0.9
-
-    BURNOUT_RISK_ELEVATED_THRESHOLD = 0.5
-    BURNOUT_RISK_HIGH_THRESHOLD = 0.7
-    BURNOUT_RISK_CRITICAL_THRESHOLD = 0.8
-
-    INDEPENDENCE_LEVEL_LOW_THRESHOLD = 0.3
-    INDEPENDENCE_LEVEL_BUILDING_THRESHOLD = 0.6
-
-    TASK_QUALITY_SUCCESS_THRESHOLD = 0.7
+    HIGH_STRESS_THRESHOLD = 0.7
+    HIGH_COGNITIVE_LOAD_THRESHOLD = 0.8
+    EARLY_WARNING_BURNOUT_THRESHOLD = 0.5
+    EARLY_WARNING_COGNITIVE_LOAD_THRESHOLD = 0.7
 
     def __init__(
         self,
@@ -317,16 +304,15 @@ class BaseAide(ABC):
         observation = self._avatar.get_observation_snapshot()
         self._deliver_crisis_coaching(observation)
 
-    def _on_avatar_task_completed(self, signal: Signal) -> None:
-        """Track effectiveness when Avatar completes a task after coaching."""
-        if not self.intervention_history:
-            return
+    def _on_avatar_task_completed(self, _signal: Signal) -> None:
+        """
+        Observe task completion events without attributing effectiveness.
 
-        last_action = self.intervention_history[-1]
-
-        # Be conservative: only credit the last intervention if we have
-        # evidence that it relates to this task attempt and is recent.
-        data = getattr(signal, "data", None) or {}
+        Effectiveness attribution is done explicitly via
+        track_intervention_effectiveness() by the orchestrating caller so we
+        can avoid stale or duplicate crediting.
+        """
+        return
 
         # If both the signal and the last action expose a task identifier,
         # ensure they match; otherwise, avoid attributing effectiveness.
@@ -478,6 +464,10 @@ class BaseAide(ABC):
             "strategy_effectiveness": self.get_strategy_effectiveness_summary(),
             "last_intervention": self.last_intervention.isoformat(),
         }
+
+    def get_strategy_effectiveness_summary(self) -> Dict[str, Any]:
+        """Public accessor for strategy effectiveness used by fusion logic."""
+        return self._get_strategy_effectiveness_summary()
 
     # ------------------------------------------------------------------
     # Private helpers — coaching delivery
@@ -700,9 +690,9 @@ class BaseAide(ABC):
 
     def _identify_risk_factors(self, avatar: BaseAvatar) -> List[str]:
         factors: List[str] = []
-        if avatar.stress_level > self.STRESS_LEVEL_HIGH_THRESHOLD:
+        if avatar.stress_level > self.HIGH_STRESS_THRESHOLD:
             factors.append("High stress level")
-        if avatar.cognitive_load > self.COGNITIVE_LOAD_HIGH_THRESHOLD:
+        if avatar.cognitive_load > self.HIGH_COGNITIVE_LOAD_THRESHOLD:
             factors.append("High cognitive load")
         if avatar.emotional_state in ("frustrated", "overwhelmed"):
             factors.append("Negative emotional state")
@@ -710,19 +700,19 @@ class BaseAide(ABC):
 
     def _detect_early_warning_signs(self, avatar: BaseAvatar) -> List[str]:
         signs: List[str] = []
-        if avatar.burnout_risk_level > self.BURNOUT_RISK_ELEVATED_THRESHOLD:
+        if avatar.burnout_risk_level > self.EARLY_WARNING_BURNOUT_THRESHOLD:
             signs.append("Elevated burnout risk score")
         if avatar.emotional_state == "frustrated":
             signs.append("Increased frustration")
-        if avatar.cognitive_load > self.COGNITIVE_LOAD_WARNING_THRESHOLD:
+        if avatar.cognitive_load > self.EARLY_WARNING_COGNITIVE_LOAD_THRESHOLD:
             signs.append("High cognitive load")
         return signs
 
     def _generate_intervention_recommendations(self, avatar: BaseAvatar) -> List[str]:
         recs: List[str] = []
-        if avatar.stress_level > self.STRESS_LEVEL_HIGH_THRESHOLD:
+        if avatar.stress_level > self.HIGH_STRESS_THRESHOLD:
             recs.append("Implement stress reduction techniques")
-        if avatar.cognitive_load > self.COGNITIVE_LOAD_HIGH_THRESHOLD:
+        if avatar.cognitive_load > self.HIGH_COGNITIVE_LOAD_THRESHOLD:
             recs.append("Reduce task complexity")
         if avatar.emotional_state in ("frustrated", "overwhelmed"):
             recs.append("Provide emotional support and validation")

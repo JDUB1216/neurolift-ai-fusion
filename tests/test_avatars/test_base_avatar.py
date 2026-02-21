@@ -111,6 +111,17 @@ class TestBaseAvatar:
 
         assert avatar.get_independence_level("test") > 0.0
 
+    def test_recent_coaching_marks_attempt_non_independent(self):
+        avatar = TestAvatar("a1", {"trait_name": "t"})
+        avatar.current_state = AvatarState.STRUGGLING
+        avatar.receive_coaching({"strategy": "guided_retry", "stress_reduction": 0.2})
+        avatar.return_to_idle()
+
+        with patch("random.random", return_value=0.01):
+            result = avatar.attempt_task({"task_type": "test", "base_success_rate": 0.99})
+
+        assert result.independent is False
+
     def test_burnout_risk_assessment(self):
         avatar = TestAvatar("a1", {"trait_name": "t"})
         avatar.stress_level = 0.8

@@ -221,6 +221,11 @@ class BaseAvatar(ABC):
     attempts, failures, and gradual improvement with Aide support.
     """
 
+    RECENT_COACHING_WINDOW_SECONDS = 60
+    INDEPENDENT_SUCCESS_INCREMENT = 0.1
+    SUPPORTED_SUCCESS_INCREMENT = 0.05
+    FAILURE_INDEPENDENCE_DECAY = 0.02
+
     def __init__(
         self,
         avatar_id: str,
@@ -328,8 +333,11 @@ class BaseAvatar(ABC):
         4. Record experience and emit signals
         5. Transition to LEARNING (success) or STRUGGLING (failure)
         """
+        attempt_started_at = datetime.now()
+        coaching_count_before_attempt = len(self.coaching_history)
+
         self._transition(AvatarState.ATTEMPTING_TASK, "task_start")
-        self.last_activity = datetime.now()
+        self.last_activity = attempt_started_at
         self.total_tasks_attempted += 1
         
         # Track when this task attempt started for coaching detection
@@ -372,38 +380,19 @@ class BaseAvatar(ABC):
         self._update_emotional_state(success, struggle_indicators)
         self._update_cognitive_load(task_context, trait_impact)
 
-        # Determine if attempt was independent (no coaching during this task attempt)
-        # Check if any coaching was received after this task attempt started
-        received_coaching_this_attempt = False
-        if self._current_task_start_time and self.coaching_history:
-            # Iterate in reverse order for better performance (recent coaching is at the end)
-            for coaching in reversed(self.coaching_history):
-                coaching_time = coaching.get("timestamp", datetime.min)
-                if coaching_time >= self._current_task_start_time:
-                    received_coaching_this_attempt = True
-                    break
-                # If we've gone back before the task started, no need to continue
-                if coaching_time < self._current_task_start_time:
-                    break
-        
-        # Determine if attempt was independent (no coaching this attempt)
-        received_coaching_this_attempt = task_context.get(
-            "received_coaching_this_attempt", False
+        # Determine if this was an independent attempt (no coaching this attempt
+        # and no immediate coached-retry carryover).
+        received_coaching_this_attempt = (
+            len(self.coaching_history) > coaching_count_before_attempt
         )
-        independent = (
-            not received_coaching_this_attempt
-            and (
-                len(self.coaching_history) == 0
-                or (
-                    self.coaching_history
-                    and (
-                        datetime.now()
-                        - self.coaching_history[-1].get("timestamp", datetime.now())
-                    ).total_seconds()
-                    > 60
-                )
-            )
-        )
+        recent_coaching = False
+        if self.coaching_history:
+            last_coaching_time = self.coaching_history[-1].get("timestamp")
+            if isinstance(last_coaching_time, datetime):
+                recent_coaching = (
+                    attempt_started_at - last_coaching_time
+                ).total_seconds() <= self.RECENT_COACHING_WINDOW_SECONDS
+        independent = not (received_coaching_this_attempt or recent_coaching)
 
         result = TaskResult(
             success=success,
@@ -728,11 +717,13 @@ class BaseAvatar(ABC):
                 progress.independent_successes += 1
                 progress.independence_milestones.append(datetime.now())
                 progress.current_independence_level = min(
-                    1.0, progress.current_independence_level + 0.1
+                    1.0,
+                    progress.current_independence_level + self.INDEPENDENT_SUCCESS_INCREMENT,
                 )
             else:
                 progress.current_independence_level = min(
-                    1.0, progress.current_independence_level + 0.05
+                    1.0,
+                    progress.current_independence_level + self.SUPPORTED_SUCCESS_INCREMENT,
                 )
             progress.last_improvement = datetime.now()
         else:
@@ -740,7 +731,8 @@ class BaseAvatar(ABC):
             progress.consecutive_successes = 0
             # Slight independence regression on failure
             progress.current_independence_level = max(
-                0.0, progress.current_independence_level - 0.02
+                0.0,
+                progress.current_independence_level - self.FAILURE_INDEPENDENCE_DECAY,
             )
 
     def _apply_coaching_effects(self, coaching_action: Dict[str, Any]) -> None:

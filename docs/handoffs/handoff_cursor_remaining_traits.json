@@ -28,7 +28,7 @@
   "pattern_to_follow": "See implementation_pattern below for a complete example",
   "base_class": "src/avatars/base_avatar.py (BaseAvatar)",
   "required_methods": [
-    "get_adhd_trait_impact(task_context) -> Dict with difficulty_modifier, quality_modifier, time_modifier, cognitive_load_modifier",
+    "get_adhd_trait_impact(task_context) -> Dict with difficulty_modifier, quality_modifier, time_modifier, cognitive_load_modifier, and struggle_indicators",
     "simulate_struggle(task_context) -> List[str] of struggle indicators"
   ],
   "implementation_pattern": {

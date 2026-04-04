@@ -1,0 +1,112 @@
+# sync-governance-public.yml
+#
+# Syncs selected governance documents from the private
+# NeuroLift-Technologies/.github-private repository into this
+# public repository so that developers have a single, always-current
+# reference without needing access to the private org.
+#
+# Required repository secret:
+#   NLT_PRIVATE_REPO_TOKEN  – a fine-grained PAT with
+#     "Contents: Read" access to NeuroLift-Technologies/.github-private
+#
+# Trigger:
+#   • Manual (workflow_dispatch) for on-demand syncs
+#   • Repository dispatch event "governance-updated" (sent by the
+#     private repo's push workflow)
+#   • Scheduled — daily at 06:00 UTC as a safety net
+
+name: Sync Governance Docs from Private Repo
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: 'Branch or tag to sync from (default: main)'
+        required: false
+        default: main
+  repository_dispatch:
+    types: [governance-updated]
+  schedule:
+    - cron: '0 6 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    name: Pull & commit governance documents
+    runs-on: ubuntu-latest
+
+    env:
+      PRIVATE_ORG: NeuroLift-Technologies
+      PRIVATE_REPO: .github-private
+      # Files to copy from the private repo into this public repo.
+      # Add entries here as new governance docs are created.
+      SYNC_FILES: |
+        NLT-DEV-OTOI.md
+
+    steps:
+      - name: Checkout public repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine source ref
+        id: ref
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "ref=${{ github.event.inputs.source_ref }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "ref=${{ github.event.client_payload.ref || 'main' }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch governance files from private repo
+        env:
+          TOKEN: ${{ secrets.NLT_PRIVATE_REPO_TOKEN }}
+          REF: ${{ steps.ref.outputs.ref }}
+        run: |
+          set -euo pipefail
+
+          API_BASE="https://api.github.com/repos/${PRIVATE_ORG}/${PRIVATE_REPO}/contents"
+          AUTH_HEADER="Authorization: Bearer ${TOKEN}"
+
+          while IFS= read -r file_path; do
+            # Skip blank lines
+            [ -z "$file_path" ] && continue
+
+            echo "Fetching: $file_path (ref: $REF)"
+            response=$(curl -fsSL \
+              -H "$AUTH_HEADER" \
+              -H "Accept: application/vnd.github.raw" \
+              "${API_BASE}/${file_path}?ref=${REF}")
+
+            # Preserve directory structure
+            dest_dir=$(dirname "$file_path")
+            mkdir -p "$dest_dir"
+            printf '%s' "$response" > "$file_path"
+            echo "  ✓ Written to $file_path"
+          done <<< "$SYNC_FILES"
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push updates
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore: sync governance docs from NeuroLift-Technologies/.github-private [skip ci]"
+          git push
+
+      - name: No changes detected
+        if: steps.diff.outputs.changed == 'false'
+        run: echo "Governance documents are already up-to-date. No commit needed."

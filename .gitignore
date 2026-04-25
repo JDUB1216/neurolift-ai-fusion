@@ -1,12 +1,11 @@
-# NeuroLift Technologies Simulation Environment
+# NeuroLift AI Fusion — monorepo
 
-# Python
+# ── Python ────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
@@ -19,36 +18,55 @@ sdist/
 var/
 wheels/
 *.egg-info/
-.installed.cfg
 *.egg
 MANIFEST
-
-# Virtual environments
 venv/
 env/
 ENV/
 env.bak/
 venv.bak/
+.venv/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# ── Node / JS ─────────────────────────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Testing
+# ── Next.js ───────────────────────────────────────────────────────────────────
+apps/web/.next/
+apps/web/out/
+
+# ── React Native / Metro ──────────────────────────────────────────────────────
+apps/mobile/.expo/
+apps/mobile/android/.gradle/
+apps/mobile/android/app/build/
+apps/mobile/android/build/
+apps/mobile/android/local.properties
+apps/mobile/ios/Pods/
+apps/mobile/ios/build/
+apps/mobile/ios/*.xcworkspace/xcuserdata/
+
+# ── Environment files ─────────────────────────────────────────────────────────
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ── Testing & coverage ────────────────────────────────────────────────────────
 .pytest_cache/
 .coverage
 htmlcov/
 .tox/
 .cache
-nosetests.xml
+coverage/
 coverage.xml
 *.cover
-.hypothesis/
 
-# Data and logs (keep templates, ignore actual data)
+# ── Data (keep templates, ignore runtime data) ────────────────────────────────
 data/training_logs/*.json
 !data/training_logs/*template.json
 data/avatar_progress/*.json
@@ -58,21 +76,25 @@ data/aide_interactions/*.json
 data/fusion_records/*.json
 logs/*.log
 
-# Configuration overrides
-configs/local_*.yaml
-configs/personal_*.json
-
-# OS
+# ── OS ────────────────────────────────────────────────────────────────────────
 .DS_Store
 .DS_Store?
 ._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Temporary files
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
 *.tmp
 *.temp
 *.bak
-.env
+build/
+
+# ── Supabase local ────────────────────────────────────────────────────────────
+supabase/.branches/
+supabase/.temp/

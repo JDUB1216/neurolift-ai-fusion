@@ -1,0 +1,8 @@
+{
+  "name": "NeuroLift",
+  "displayName": "NeuroLift AI",
+  "version": "1.0.0",
+  "buildNumber": 1,
+  "bundleId": "app.neurolift.mobile",
+  "androidPackage": "app.neurolift.mobile"
+}

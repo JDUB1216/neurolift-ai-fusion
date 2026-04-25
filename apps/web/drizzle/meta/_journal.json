@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1777120757177,
+      "tag": "0000_curved_leopardon",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1777120916050,
+      "tag": "0001_married_squadron_supreme",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1777120997198,
+      "tag": "0002_left_shard",
+      "breakpoints": true
+    }
+  ]
+}

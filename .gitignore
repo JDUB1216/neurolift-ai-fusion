@@ -76,3 +76,13 @@ Thumbs.db
 *.temp
 *.bak
 .env
+
+# Node / Web / Mobile
+node_modules/
+.next/
+out/
+.expo/
+.expo-shared/
+android/
+ios/
+*.tsbuildinfo

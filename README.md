@@ -1,3 +1,21 @@
+# NeuroLift AI Fusion
+
+## 🌐 Web Dashboard (`apps/web/`)
+
+A full-stack web application for managing Avatar-Aide training sessions, fusion readiness, and burnout risk monitoring.
+
+**Stack:** React 19 · Tailwind CSS 4 · shadcn/ui · Express 4 · tRPC 11 · Drizzle ORM · MySQL/TiDB
+
+**Features:** Dashboard home · Avatar & Aide management · Fusion Engine with radar chart · Training session management (real-time polling) · Session detail view · Burnout Monitor with trend charts · Progress Analytics · Role-based access control · Mobile-responsive sidebar
+
+```bash
+cd apps/web && pnpm install && pnpm dev
+```
+
+Tests: `pnpm test` — 24 passing vitest tests
+
+---
+
 # NeuroLift Technologies Simulation Environment
 
 **NeuroLift AI-Fusion Framework - Simulation Training Environment**

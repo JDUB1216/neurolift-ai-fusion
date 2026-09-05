@@ -781,8 +781,8 @@ class NLTTrainer:
             avatar_id = i * 2
             aide_id = i * 2 + 1
 
-            # Extract cognitive state (first 7 dims)
-            avatar_cog = obs[avatar_id][:7]
+            # Extract cognitive state (dims 6-12: focus, load, stress, burnout, independence, fusion, success)
+            avatar_cog = obs[avatar_id][6:13]
 
             # Avatar action
             move, interact = avatar_policy(avatar_cog)
@@ -890,14 +890,24 @@ class NLTTrainer:
         log.info(f"Training complete. {self.iteration} iterations, {self.comm.episode_count} episodes.")
         self._close()
 
-    def _init_synthetic_state(self):
-        """Initialize synthetic cognitive states for standalone mode."""
-        # Start all avatars with base cognitive state
-        base_state = np.array([0.65, 0.20, 0.15, 0.05, 0.20, 0.0, 0.5], dtype=np.float32)
-        for i in range(self.comm.num_agents):
-            self.comm.obs_buffer[i] = base_state
+
 
         log.info("Synthetic cognitive state initialized (standalone mode)")
+
+    def _init_synthetic_state(self):
+        """Initialize synthetic cognitive states for standalone mode."""
+        # Start all avatars with base cognitive state (13-dim: posXYZ(3) + velXYZ(3) + cognitive(7))
+        base_state = np.zeros(OBS_DIM, dtype=np.float32)
+        # Cognitive state (last 7 dims)
+        base_state[6] = 0.65   # Focus
+        base_state[7] = 0.20   # CognitiveLoad
+        base_state[8] = 0.15   # Stress
+        base_state[9] = 0.05   # Burnout
+        base_state[10] = 0.20  # Independence
+        base_state[11] = 0.0   # FusionReady
+        base_state[12] = 0.5   # SuccessRate
+        for i in range(self.comm.num_agents):
+            self.comm.obs_buffer[i] = base_state
 
     def _run_training_iteration(self):
         """Run one PPO training iteration for all agents."""

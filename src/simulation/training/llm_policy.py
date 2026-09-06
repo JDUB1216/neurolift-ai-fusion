@@ -1,30 +1,18 @@
 """
-NLT LLM Policy Bridge — Ollama Backend
-=======================================
-Local LLM inference for avatar control via Ollama.
-
-Optimized for qwen2.5:1.5B — uses "game engine" role prompting
-to get structured action output without safety filter issues.
-
-Usage:
-    python3 train_nlt.py --llm --ollama-model qwen2.5:1.5b --agents 20 --iterations 1000
+NLT LLM Policy Bridge — HTTP Backend for UE5
+==============================================
+Local LLM inference via Ollama, sends actions to UE5 via HTTP.
 """
 
-import os
 import re
-import json
-import time
-import logging
 import requests
 import numpy as np
-from typing import Tuple, Optional
+from typing import Tuple, List, Dict, Optional
 
+import logging
 log = logging.getLogger("NLT-LLM")
 
-# ---------------------------------------------------------------------------
-# Constants (must match UE5 codebase)
-# ---------------------------------------------------------------------------
-
+# Constants
 OBS_DIM = 13
 AVATAR_CONTINUOUS_DIM = 3
 AVATAR_DISCRETE_DIM = 4
@@ -45,69 +33,72 @@ STRATEGY_NAMES = [
     "DistractionImmune", "AttentionAnchor", "ShrinkTheTask",
 ]
 
-# ---------------------------------------------------------------------------
-# Prompts
-# ---------------------------------------------------------------------------
 
 def format_avatar_prompt(obs: np.ndarray) -> str:
-    """Game-engine style prompt for avatar action selection."""
     return (
-        f"You are a game engine AI controlling an avatar.\n"
-        f"State: focus={obs[FOCUS_IDX]:.1f}, stress={obs[STRESS_IDX]:.1f}, "
-        f"burnout={obs[BURNOUT_IDX]:.1f}, independence={obs[INDEPENDENCE_IDX]:.1f}\n"
-        f"Choose movement direction (x,y,z from -1 to 1) and action "
-        f"(0=Idle,1=StartTask,2=Help,3=CompleteTask)\n"
-        f"Reply in format: MOVE x y z INTERACT i"
+        f"Focus:{obs[FOCUS_IDX]:.1f} Stress:{obs[STRESS_IDX]:.1f} "
+        f"Burnout:{obs[BURNOUT_IDX]:.1f} Independence:{obs[INDEPENDENCE_IDX]:.1f} "
+        f"Success:{obs[SUCCESS_IDX]:.1f}\n"
+        f"Move [-1..1] x,y,z. Action: 0=Idle,1=Start,2=Help,3=Complete\n"
+        f"MOVE x y z INTERACT i"
     )
 
 
 def format_aide_prompt(obs: np.ndarray) -> str:
-    """Game-engine style prompt for aide strategy selection."""
     return (
-        f"You are a game engine AI controlling an aide coach.\n"
-        f"Avatar state: focus={obs[FOCUS_IDX]:.1f}, stress={obs[STRESS_IDX]:.1f}, "
-        f"burnout={obs[BURNOUT_IDX]:.1f}, independence={obs[INDEPENDENCE_IDX]:.1f}\n"
-        f"Choose strategy: 0=Pomodoro,1=LadderStep,2=BodyDouble,3=Intent,4=TwoMin,"
-        f"5=Chunk,6=Refocus,7=DistractImmune,8=Anchor,9=ShrinkTask\n"
-        f"Reply in format: STRATEGY i"
+        f"Focus:{obs[FOCUS_IDX]:.1f} Stress:{obs[STRESS_IDX]:.1f} "
+        f"Burnout:{obs[BURNOUT_IDX]:.1f} Independence:{obs[INDEPENDENCE_IDX]:.1f}\n"
+        f"0=Pomodoro 1=Ladder 2=Body 3=Intent 4=TwoMin 5=Chunk 6=Refocus 7=Dist 8=Anchor 9=Shrink\n"
+        f"STRATEGY i"
     )
 
 
-# ---------------------------------------------------------------------------
-# Parsers
-# ---------------------------------------------------------------------------
-
 def parse_avatar_response(response: str) -> Tuple[np.ndarray, int]:
-    """Parse: MOVE x y z INTERACT i"""
     move = np.zeros(3, dtype=np.float32)
     interaction = 0
-
     m = re.search(r'MOVE\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)', response)
     if m:
         move = np.clip(np.array([float(m.group(1)), float(m.group(2)), float(m.group(3))]), -1.0, 1.0).astype(np.float32)
-
     i = re.search(r'INTERACT\s+(\d+)', response)
     if i:
         interaction = int(i.group(1)) % len(INTERACTION_NAMES)
-
     return move, interaction
 
 
 def parse_aide_response(response: str) -> int:
-    """Parse: STRATEGY i"""
     m = re.search(r'STRATEGY\s+(\d+)', response)
     if m:
         return int(m.group(1)) % len(STRATEGY_NAMES)
     return 0
 
 
-# ---------------------------------------------------------------------------
-# Ollama Client
-# ---------------------------------------------------------------------------
+class UE5HTTPClient:
+    def __init__(self, base_url: str = "http://localhost:8765"):
+        self.base_url = base_url
+        self._session = requests.Session()
+
+    def send_action(self, move_x: float, move_y: float, move_z: float,
+                     interact: int, avatar_id: str = "") -> Dict:
+        try:
+            resp = self._session.post(
+                f"{self.base_url}/api/avatar/action",
+                json={
+                    "avatar_id": avatar_id,
+                    "move_x": float(move_x),
+                    "move_y": float(move_y),
+                    "move_z": float(move_z),
+                    "interact": int(interact),
+                },
+                timeout=5,
+            )
+            resp.raise_for_status()
+            return resp.json()
+        except Exception as e:
+            log.error(f"Failed to send action to UE5: {e}")
+            return {"ok": False, "error": str(e)}
+
 
 class OllamaClient:
-    """Local LLM inference via Ollama."""
-
     def __init__(self, model: str = "qwen2.5:1.5b", base_url: str = "http://localhost:11434"):
         self.model = model
         self.base_url = base_url
@@ -120,9 +111,9 @@ class OllamaClient:
             resp.raise_for_status()
             models = [m['name'] for m in resp.json().get('models', [])]
             if self.model not in models:
-                log.warning(f"Model '{self.model}' not in Ollama. Run: ollama pull {self.model}")
+                log.warning(f"Model '{self.model}' not in Ollama.")
         except Exception as e:
-            log.error(f"Cannot reach Ollama at {self.base_url}: {e}")
+            log.error(f"Cannot reach Ollama: {e}")
 
     def complete(self, prompt: str, max_tokens: int = 32) -> str:
         try:
@@ -132,12 +123,7 @@ class OllamaClient:
                     "model": self.model,
                     "prompt": prompt,
                     "stream": False,
-                    "options": {
-                        "num_predict": max_tokens,
-                        "temperature": 0.3,
-                        "top_k": 10,
-                        "repeat_penalty": 1.1,
-                    }
+                    "options": {"num_predict": max_tokens, "temperature": 0.3, "top_k": 10}
                 },
                 timeout=30,
             )
@@ -148,13 +134,7 @@ class OllamaClient:
             return ""
 
 
-# ---------------------------------------------------------------------------
-# Policy Classes
-# ---------------------------------------------------------------------------
-
 class AvatarLLMPolicy:
-    """LLM-based policy for Avatar (replaces PyTorch AvatarPolicy)."""
-
     def __init__(self, client: OllamaClient):
         self.client = client
 
@@ -163,13 +143,10 @@ class AvatarLLMPolicy:
         response = self.client.complete(prompt, max_tokens=32)
         if not response:
             return np.zeros(3, dtype=np.float32), 0
-        log.debug(f"Avatar LLM: {response.strip()}")
         return parse_avatar_response(response)
 
 
 class AideLLMPolicy:
-    """LLM-based policy for Aide (replaces PyTorch AidePolicy)."""
-
     def __init__(self, client: OllamaClient):
         self.client = client
 
@@ -178,5 +155,4 @@ class AideLLMPolicy:
         response = self.client.complete(prompt, max_tokens=16)
         if not response:
             return 0
-        log.debug(f"Aide LLM: {response.strip()}")
         return parse_aide_response(response)
